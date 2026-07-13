@@ -252,6 +252,20 @@
     padding:110px clamp(16px,4vw,60px) 80px;
   }
   .panel.open{transform:translateY(0)}
+  .panel-mono{
+    position:absolute;top:64px;right:clamp(10px,3vw,44px);z-index:0;
+    font-family:'Anton',Impact,sans-serif;line-height:1;
+    font-size:clamp(110px,24vw,280px);letter-spacing:.01em;
+    background:linear-gradient(105deg,#7e7e7b 0%,#ffffff 16%,#4c4c4a 36%,#f7f7f4 54%,#6c6c69 70%,#ffffff 88%,#8a8a87 100%);
+    background-size:230% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:sheen 7s linear infinite;
+    opacity:.07;pointer-events:none;user-select:none;
+  }
+  .panel > *:not(.panel-mono){position:relative;z-index:1}
+  .panel .rv{opacity:0;transform:translateY(18px);transition:none}
+  .panel.open .rv{opacity:1;transform:none;
+    transition:opacity .6s var(--ease),transform .6s var(--ease)}
   .panel-close{
     position:fixed;top:0;right:0;z-index:510;
     padding:clamp(16px,2.2vw,26px) clamp(16px,2.6vw,40px);
@@ -315,7 +329,17 @@
   @media (max-width:760px){.a-cols{grid-template-columns:1fr}}
 
   .talk-big{font-family:'Anton',Impact,sans-serif;text-transform:uppercase;
-    font-size:clamp(56px,13vw,190px);line-height:.95}
+    font-size:clamp(56px,13vw,190px);line-height:.95;
+    background:linear-gradient(105deg,#7e7e7b 0%,#ffffff 16%,#4c4c4a 36%,#f7f7f4 54%,#6c6c69 70%,#ffffff 88%,#8a8a87 100%);
+    background-size:230% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:sheen 5.5s linear infinite;
+  }
+  .mailrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .copy-chip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+    border:1px solid var(--line);border-radius:100px;padding:9px 16px;color:var(--dim);
+    transition:background .3s,color .3s,border-color .3s;margin-top:clamp(26px,4.5vh,46px)}
+  .copy-chip:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
   .mail{display:inline-block;font-weight:600;font-size:clamp(17px,2.6vw,30px);
     margin-top:clamp(26px,4.5vh,46px);position:relative;padding-bottom:7px;word-break:break-all}
   .mail::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--line)}
@@ -336,6 +360,7 @@
     background-size:130px 130px;
     display:none;flex-direction:column;
     overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+    touch-action:pan-y;
   }
   .detail.open{display:flex}
   .d-top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;
@@ -481,6 +506,7 @@
 </div>
 
 <div class="panel" id="panel-hakkimda" aria-hidden="true">
+  <span class="panel-mono" aria-hidden="true">YEC<sup style="font-size:.18em;font-family:Archivo,sans-serif">®</sup></span>
   <span class="p-label label">Hakkımda</span>
   <h2 class="a-statement">Merhaba! Ben Yunus, İstanbul'da yaşayan <em class="chrome">multidisipliner</em> bir grafik tasarımcıyım.</h2>
   <div class="chips">
@@ -520,9 +546,10 @@
 </div>
 
 <div class="panel" id="panel-iletisim" aria-hidden="true">
+  <span class="panel-mono" aria-hidden="true">YEC<sup style="font-size:.18em;font-family:Archivo,sans-serif">®</sup></span>
   <span class="p-label label">İletişim</span>
   <h2 class="talk-big">Konuşalım</h2>
-  <div><a class="mail" href="mailto:08yec.design@gmail.com" data-hover>08yec.design@gmail.com</a></div>
+  <div class="mailrow"><a class="mail" href="mailto:08yec.design@gmail.com" data-hover>08yec.design@gmail.com</a><button class="copy-chip" id="copyMail" data-hover>Kopyala</button></div>
   <div class="orbit-div" aria-hidden="true"><i class="p1"></i><i class="p2"></i></div>
   <div class="chips">
     <span class="chipInfo"><i></i>İstanbul, TR</span>
@@ -760,6 +787,7 @@
     dBehance.href=p.url;
   }
   function dropPaper(fast){
+    paper.style.transform=''; paper.style.transition='';
     paper.classList.remove('fall','away','toss-l','toss-r','fast');
     void paper.offsetWidth;
     paper.classList.add('fall');
@@ -814,6 +842,56 @@
   document.getElementById('dBack').addEventListener('click',()=>closeDetail());
   document.getElementById('dPrev').addEventListener('click',()=>goProject((dCur+8)%9,-1));
   document.getElementById('dNext').addEventListener('click',()=>goProject((dCur+1)%9,1));
+
+  /* panel içerikleri sırayla süzülür */
+  document.querySelectorAll('.panel').forEach(p=>{
+    [...p.children].filter(el=>!el.classList.contains('panel-mono')).forEach((el,i)=>{
+      el.classList.add('rv');
+      el.style.transitionDelay=(.08+i*.07).toFixed(2)+'s';
+    });
+  });
+
+  /* e-postayı kopyala */
+  const copyMail=document.getElementById('copyMail');
+  if (copyMail) copyMail.addEventListener('click',()=>{
+    const done=()=>{copyMail.textContent='Kopyalandı ✓';setTimeout(()=>copyMail.textContent='Kopyala',1600);};
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText('08yec.design@gmail.com').then(done,done);
+    } else done();
+  });
+
+  /* telefonda kağıdı kaydırarak önceki/sonraki */
+  (function swipeNav(){
+    let sx=0,sy=0,ax=null,active=false;
+    const snapBack=()=>{
+      paper.style.transition='transform .3s var(--ease)';
+      paper.style.transform='';
+      setTimeout(()=>{paper.style.transition='';},320);
+    };
+    detail.addEventListener('pointerdown',e=>{
+      if (e.pointerType!=='touch' || navLock || !detailOpen || dClosing) return;
+      if (e.target.closest('button,a')) return;
+      active=true; ax=null; sx=e.clientX; sy=e.clientY;
+    });
+    detail.addEventListener('pointermove',e=>{
+      if (!active) return;
+      const dx=e.clientX-sx, dy=e.clientY-sy;
+      if (ax===null && Math.hypot(dx,dy)>12) ax = Math.abs(dx)>Math.abs(dy) ? 'h':'v';
+      if (ax==='h' && !reduced){
+        paper.classList.remove('fall','fast');
+        paper.style.transform='translateX('+(dx*.4).toFixed(0)+'px) rotate('+(-1.4+dx*.02).toFixed(1)+'deg)';
+      }
+    });
+    detail.addEventListener('pointerup',e=>{
+      if (!active) return; active=false;
+      if (ax!=='h') return;
+      const dx=e.clientX-sx;
+      if (dx<-60)      goProject((dCur+1)%9, 1);   /* sola kaydır → sonraki */
+      else if (dx>60)  goProject((dCur+8)%9,-1);   /* sağa kaydır → önceki */
+      else snapBack();
+    });
+    detail.addEventListener('pointercancel',()=>{ if(active){active=false; if(ax==='h')snapBack();} });
+  })();
 
   /* ============================================================
      3D SAHNE — SAF CSS TRANSFORM (her tarayıcıda çalışır)
