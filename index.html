@@ -256,9 +256,10 @@
     position:fixed;top:0;right:0;z-index:510;
     padding:clamp(16px,2.2vw,26px) clamp(16px,2.6vw,40px);
     font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
-    opacity:0;pointer-events:none;transition:opacity .4s;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .25s, visibility 0s linear .25s;
   }
-  .panel-close.show{opacity:1;pointer-events:auto}
+  .panel-close.show{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .25s}
   .panel-close:hover{opacity:.6}
   .p-label{color:var(--dim);display:block;margin-bottom:clamp(30px,5vh,54px)}
 
@@ -300,7 +301,7 @@
   .a-p{color:rgba(242,241,236,.72);max-width:52ch;margin-top:clamp(20px,3.5vh,36px);font-size:15px}
   .a-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,5vw,80px);margin-top:clamp(28px,4.5vh,48px);max-width:1000px}
   .a-h{color:var(--dim);margin-bottom:14px}
-  .a-list li{list-style:none;display:flex;justify-content:space-between;gap:12px;
+  .a-list li{list-style:none;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
     padding:13px 0;border-top:1px solid var(--line);position:relative;
     font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
     transition:padding-left .35s var(--ease)}
@@ -363,6 +364,7 @@
   .paper figcaption{margin-top:11px;color:#333;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
     display:flex;justify-content:space-between;gap:20px}
   .paper.fall{animation:fall 1.5s cubic-bezier(.23,.9,.32,1) both}
+  .paper.fall.fast{animation-duration:1.05s}
   @keyframes fall{
     0%{transform:translateY(-115vh) rotate(-10deg)}
     38%{transform:translateY(-46vh) rotate(7deg)}
@@ -370,6 +372,16 @@
     86%{transform:translateY(1.2vh) rotate(1.5deg)}
     100%{transform:translateY(0) rotate(-1.4deg)}
   }
+  .paper.toss-l{animation:tossL .42s cubic-bezier(.55,0,.85,.45) both}
+  .paper.toss-r{animation:tossR .42s cubic-bezier(.55,0,.85,.45) both}
+  @keyframes tossL{to{transform:translate(-130%,7vh) rotate(-24deg)}}
+  @keyframes tossR{to{transform:translate(130%,7vh) rotate(24deg)}}
+  .d-notes .reveal.swap-out{
+    opacity:0!important;
+    transform:translateX(var(--sw,-26px))!important;
+    transition:opacity .22s ease,transform .22s ease!important;
+  }
+  .detail.fastswap .d-notes .reveal{transition-delay:.32s}
   .paper.away{animation:away .55s cubic-bezier(.5,0,.8,.4) both}
   @keyframes away{to{transform:translateY(115vh) rotate(9deg)}}
 
@@ -385,6 +397,9 @@
   .d-nav{margin-left:auto;display:flex;gap:8px}
   .d-notes .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease) .85s,transform .7s var(--ease) .85s}
   .detail.open .d-notes .reveal.in{opacity:1;transform:none}
+  .chr{display:inline-block;white-space:pre}
+  .d-actions{transition:transform .8s cubic-bezier(.5,0,.8,.4) .32s}
+  .d-actions.drop{transform:translateY(118vh) rotate(5deg)}
 
   @media (max-width:760px){
     :root{--cw:150px;--ch:112px}
@@ -455,52 +470,57 @@
     <button class="active" id="modeRings" data-hover>Rings</button>
     <button id="modeSpiral" data-hover>Spiral</button>
   </div>
-  <span class="counter label">09 / 09 seçilmiş <a href="https://www.behance.net/yunusenescan" target="_blank" rel="noopener" data-hover>İş</a></span>
-  <span class="copyright label">© 2026</span>
+  <span class="copyright label">© 2026 YEC®</span>
 </div>
 
 <span class="hint label" id="hint">Kaydır · Sürükle · Tıkla</span>
 
 <div class="panel" id="panel-isler" aria-hidden="true">
-  <span class="p-label label">(İşler — 09)</span>
+  <span class="p-label label">İşler</span>
   <div id="workRows"></div>
 </div>
 
 <div class="panel" id="panel-hakkimda" aria-hidden="true">
-  <span class="p-label label">(Hakkımda)</span>
+  <span class="p-label label">Hakkımda</span>
   <h2 class="a-statement">Merhaba! Ben Yunus, İstanbul'da yaşayan <em class="chrome">multidisipliner</em> bir grafik tasarımcıyım.</h2>
   <div class="chips">
     <span class="chipInfo"><i></i>İstanbul, TR</span>
-    <span class="chipInfo"><i></i>Grafik Tasarım &amp; İllüstrasyon</span>
+    <span class="chipInfo"><i></i>10+ Yıl Deneyim</span>
     <span class="chipInfo"><i></i>Freelance &amp; Tam Zamanlı</span>
   </div>
-  <p class="a-p">Temelde grafik tasarım, logo tasarımı, web tasarım, illüstrasyon, karakter tasarımı ve dijital çizim alanlarında işler üretiyorum. Kendimi ve ekibimi tasarımda geliştirebileceğim bir takımın parçası olmak; farklı insanların hayatına renk ve keyif katmak istiyorum.</p>
+  <p class="a-p">Grafik tasarım alanında 10 yılı aşkın deneyime sahip bir tasarımcıyım. Sosyal medya tasarımları, dijital içerik üretimi ve marka görsel kimliği geliştirme konularında çalışmalar yapıyorum.</p>
+  <p class="a-p">Tasarım süreçlerinde estetik, sadelik ve işlevselliği bir araya getirerek markaların görsel iletişimini güçlendirmeyi hedefliyorum. Sosyal medya içerikleri, kampanya görselleri ve dijital tasarım projelerinde yaratıcı ve etkili çözümler üretmeye odaklanıyorum.</p>
+  <p class="a-p">Sürekli gelişen tasarım dünyasını yakından takip ederek kendimi güncel tutmayı ve her projede yenilikçi bir yaklaşım sunmayı önemsiyorum.</p>
   <div class="orbit-div" aria-hidden="true"><i class="p1"></i><i class="p2"></i></div>
   <div class="a-cols">
     <div>
-      <p class="a-h label">(Hizmetler)</p>
+      <p class="a-h label">Hizmetler</p>
       <ul class="a-list">
         <li><span><em class="li-idx">01</em>Logo &amp; Marka Kimliği</span></li>
-        <li><span><em class="li-idx">02</em>Editoryal Tasarım</span> <span class="sub">Dergi / Kapak</span></li>
-        <li><span><em class="li-idx">03</em>İllüstrasyon</span> <span class="sub">Portre / Karakter</span></li>
-        <li><span><em class="li-idx">04</em>Dijital Çizim</span></li>
-        <li><span><em class="li-idx">05</em>Sosyal Medya Tasarımı</span></li>
-        <li><span><em class="li-idx">06</em>Web Tasarım</span></li>
+        <li><span><em class="li-idx">02</em>Sosyal Medya Tasarımı</span></li>
+        <li><span><em class="li-idx">03</em>Editoryal Tasarım</span> <span class="sub">Dergi / Kapak</span></li>
+        <li><span><em class="li-idx">04</em>İllüstrasyon</span> <span class="sub">Portre / Karakter</span></li>
+        <li><span><em class="li-idx">05</em>Dijital Çizim</span></li>
+        <li><span><em class="li-idx">06</em>Video &amp; Animasyon</span></li>
+        <li><span><em class="li-idx">07</em>Web Tasarım</span></li>
       </ul>
     </div>
     <div>
-      <p class="a-h label">(Deneyim)</p>
+      <p class="a-h label">Deneyim</p>
       <ul class="a-list">
-        <li><span><em class="li-idx">01</em>Grafik Tasarımcı</span> <span class="sub">Manhattan Espress</span></li>
-        <li><span><em class="li-idx">02</em>Grafik Tasarımcı</span> <span class="sub">Ogoo Digital</span></li>
-        <li><span><em class="li-idx">03</em>Stajyer</span> <span class="sub">Baykar Teknoloji</span></li>
+        <li><span><em class="li-idx">01</em>Türkiye Dok Gemi-İş Sendikası</span> <span class="sub">2025 — Halen</span></li>
+        <li><span><em class="li-idx">02</em>Pijans Creative &amp; Production</span> <span class="sub">2022 — 2025</span></li>
+        <li><span><em class="li-idx">03</em>Amerikadanalisveris.com</span> <span class="sub">2018 — 2021</span></li>
+        <li><span><em class="li-idx">04</em>ShipBando</span> <span class="sub">2019</span></li>
+        <li><span><em class="li-idx">05</em>OGOO Teknoloji Ajansı</span> <span class="sub">2016 — 2017</span></li>
+        <li><span><em class="li-idx">06</em>Baykar Technologies</span> <span class="sub">Stajyer · 2014 — 2015</span></li>
       </ul>
     </div>
   </div>
 </div>
 
 <div class="panel" id="panel-iletisim" aria-hidden="true">
-  <span class="p-label label">(İletişim)</span>
+  <span class="p-label label">İletişim</span>
   <h2 class="talk-big">Konuşalım</h2>
   <div><a class="mail" href="mailto:08yec.design@gmail.com" data-hover>08yec.design@gmail.com</a></div>
   <div class="orbit-div" aria-hidden="true"><i class="p1"></i><i class="p2"></i></div>
@@ -519,7 +539,7 @@
 <div class="detail" id="detail" aria-hidden="true">
   <div class="d-top">
     <button class="d-back" id="dBack" data-hover>← Geri</button>
-    <span class="d-idx label" id="dIdx">(01 / 09)</span>
+    <span class="d-idx label" id="dIdx">01 / 09</span>
   </div>
   <div class="d-stage">
     <figure class="paper" id="paper">
@@ -528,7 +548,7 @@
     </figure>
   </div>
   <div class="d-notes">
-    <span class="p-label label reveal">(Önemli Notlar)</span>
+    <span class="p-label label reveal" id="dLabel">Önemli Notlar</span>
     <h2 class="d-title reveal" id="dTitle"></h2>
     <p class="d-cat reveal" id="dCat"></p>
     <p class="d-text reveal" id="dText"></p>
@@ -698,7 +718,36 @@
   const dText=document.getElementById('dText');
   const dIdx=document.getElementById('dIdx');
   const dBehance=document.getElementById('dBehance');
-  let dCur=0;
+  const dLabel=document.getElementById('dLabel');
+  const dActions=detail.querySelector('.d-actions');
+  const LABEL_TEXT='Önemli Notlar';
+  let dCur=0, dClosing=false;
+
+  /* kağıt düşerken harflere "çarpar" — her harf ayrı savrulur */
+  function splitChars(el){
+    const txt=el.textContent;
+    el.innerHTML=txt.split('').map(ch=>'<span class="chr">'+(ch===' '?'&nbsp;':ch.replace('<','&lt;'))+'</span>').join('');
+    return el.querySelectorAll('.chr');
+  }
+  function scatterNotes(){
+    const groups=[[dLabel,0],[dTitle,.06],[dCat,.14],[dText,.18]];
+    groups.forEach(([el,base])=>{
+      splitChars(el).forEach(chr=>{
+        const dx=(Math.random()*2-1)*170;
+        const rot=(Math.random()*2-1)*150;
+        const delay=(base+Math.random()*.14).toFixed(2);
+        chr.style.transition='transform .85s cubic-bezier(.5,0,.8,.4) '+delay+'s';
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{
+          chr.style.transform='translate('+dx.toFixed(0)+'px,118vh) rotate('+rot.toFixed(0)+'deg)';
+        }));
+      });
+    });
+    dActions.classList.add('drop');
+  }
+  function restoreNotes(){
+    dLabel.textContent=LABEL_TEXT;
+    dActions.classList.remove('drop');
+  }
 
   function fillDetail(k){
     const p=PROJECTS[k];
@@ -707,17 +756,41 @@
     dTitle.innerHTML=p.t+'<sup>®</sup>';
     dCat.textContent=p.c;
     dText.textContent=p.n;
-    dIdx.textContent='(0'+(k+1)+' / 09)';
+    dIdx.textContent='0'+(k+1)+' / 09';
     dBehance.href=p.url;
   }
-  function dropPaper(){
-    paper.classList.remove('fall','away');
+  function dropPaper(fast){
+    paper.classList.remove('fall','away','toss-l','toss-r','fast');
     void paper.offsetWidth;
     paper.classList.add('fall');
+    if (fast) paper.classList.add('fast');
     detail.querySelectorAll('.reveal').forEach(r=>{r.classList.remove('in');void r.offsetWidth;r.classList.add('in');});
+  }
+  let navLock=false;
+  function goProject(k,dir){                    /* dir: 1 sonraki, -1 önceki */
+    if (navLock || !detailOpen) return;
+    if (reduced){ dCur=k; fillDetail(k); detail.scrollTop=0; return; }
+    navLock=true;
+    detail.classList.add('fastswap');
+    const sw=(dir===1?-26:26)+'px';
+    detail.querySelectorAll('.d-notes .reveal').forEach(r=>{
+      r.style.setProperty('--sw',sw); r.classList.add('swap-out');
+    });
+    paper.classList.remove('fall','fast');
+    paper.classList.add(dir===1?'toss-l':'toss-r');   /* eski kağıt savrulur */
+    setTimeout(()=>{
+      dCur=k; fillDetail(k); detail.scrollTop=0;
+      detail.querySelectorAll('.d-notes .reveal').forEach(r=>r.classList.remove('swap-out'));
+      dropPaper(true);                                 /* yenisi hızlıca düşer */
+      setTimeout(()=>{ navLock=false; detail.classList.remove('fastswap'); }, 1150);
+    }, 400);
   }
   function openDetail(k){
     closePanel();
+    dClosing=false; navLock=false;
+    detail.classList.remove('fastswap');
+    detail.querySelectorAll('.d-notes .reveal').forEach(r=>r.classList.remove('swap-out'));
+    restoreNotes();
     dCur=k; fillDetail(k);
     detail.classList.add('open'); detail.setAttribute('aria-hidden','false');
     detail.scrollTop=0; detailOpen=true;
@@ -725,16 +798,22 @@
     dropPaper();
   }
   function closeDetail(instant){
-    if (!detailOpen) return;
+    if (!detailOpen || dClosing) return;
     detailOpen=false;
     closeBtn.classList.remove('show');       /* kapat butonu kalmasın */
-    if (instant || reduced){ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); return; }
+    if (instant || reduced){ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); restoreNotes(); return; }
+    dClosing=true;
     paper.classList.remove('fall'); paper.classList.add('away');
-    setTimeout(()=>{ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); paper.classList.remove('away'); }, 520);
+    setTimeout(scatterNotes, 150);           /* kağıt yazı hizasına inince çarpma başlar */
+    setTimeout(()=>{
+      detail.classList.remove('open'); detail.setAttribute('aria-hidden','true');
+      paper.classList.remove('away');
+      restoreNotes(); dClosing=false;
+    }, 1250);
   }
   document.getElementById('dBack').addEventListener('click',()=>closeDetail());
-  document.getElementById('dPrev').addEventListener('click',()=>{ dCur=(dCur+8)%9; fillDetail(dCur); detail.scrollTop=0; dropPaper(); });
-  document.getElementById('dNext').addEventListener('click',()=>{ dCur=(dCur+1)%9; fillDetail(dCur); detail.scrollTop=0; dropPaper(); });
+  document.getElementById('dPrev').addEventListener('click',()=>goProject((dCur+8)%9,-1));
+  document.getElementById('dNext').addEventListener('click',()=>goProject((dCur+1)%9,1));
 
   /* ============================================================
      3D SAHNE — SAF CSS TRANSFORM (her tarayıcıda çalışır)
