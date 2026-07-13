@@ -727,6 +727,7 @@
   function closeDetail(instant){
     if (!detailOpen) return;
     detailOpen=false;
+    closeBtn.classList.remove('show');       /* kapat butonu kalmasın */
     if (instant || reduced){ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); return; }
     paper.classList.remove('fall'); paper.classList.add('away');
     setTimeout(()=>{ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); paper.classList.remove('away'); }, 520);
@@ -942,7 +943,7 @@
 
   /* dönüş + zoom + sürükleme */
   let rot=0, rotVel=0, zoom=isMobile?0.76:1, zoomT=zoom, mouseNX=0, mouseNY=0;
-  const BASE=reduced?0:.028;                 /* derece/kare — sakin */
+  const BASE=reduced?0:(isMobile?.055:.028);   /* mobil biraz daha canlı */
 
   addEventListener('wheel',e=>{
     if (uiOpen()) return;
