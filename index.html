@@ -41,7 +41,7 @@
   /* ============================================
      3D SAHNE — saf CSS (WebGL yok, çökme yok)
      ============================================ */
-  .scene{position:fixed;inset:0;z-index:1;perspective:1400px;perspective-origin:50% 46%;overflow:hidden;touch-action:none}
+  .scene{position:fixed;inset:0;z-index:1;perspective:1400px;perspective-origin:50% 46%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
   .tilt{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
   .world{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
   .card3d{
@@ -52,11 +52,15 @@
     cursor:pointer;
     transition:transform 1.05s var(--ease),opacity 1.05s var(--ease);
     opacity:0;
+    will-change:transform;
   }
+  body.dragging{cursor:grabbing}
+  body.dragging .card3d{pointer-events:none}
   .card3d .inner{position:absolute;inset:0;transition:transform .35s var(--ease);background:#1C1C1A;overflow:hidden;
     border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
   .card3d:hover .inner{transform:scale(1.07)}
-  .card3d img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .card3d img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+    pointer-events:none;-webkit-user-drag:none;user-drag:none}
   .card3d .ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
     padding:12px;border:1px solid var(--line);border-radius:12px}
   .card3d .ph b{font-size:34px;font-weight:700;line-height:1}
@@ -369,21 +373,42 @@
   .d-back{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;transition:opacity .3s}
   .d-back:hover{opacity:.6}
   .d-idx{color:var(--dim)}
-  .d-stage{display:flex;align-items:center;justify-content:center;
+  .d-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:clamp(6px,2vh,20px) clamp(16px,4vw,60px) 0;
-    margin-bottom:clamp(30px,6vh,60px)}
+    margin-bottom:clamp(24px,5vh,50px)}
   .paper{
+    position:relative;
     background:var(--paper);
     padding:clamp(10px,1.3vw,16px) clamp(10px,1.3vw,16px) clamp(12px,1.6vw,18px);
     box-shadow:0 30px 60px rgba(0,0,0,.45), 0 5px 14px rgba(0,0,0,.3);
     width:fit-content;max-width:min(860px,90vw);
     transform:rotate(-1.4deg);
   }
+  .paper.deste::before,.paper.deste::after{
+    content:"";position:absolute;inset:0;background:var(--paper);z-index:-1;
+    box-shadow:0 16px 36px rgba(0,0,0,.32);
+  }
+  .paper.deste::before{transform:rotate(2.6deg) translate(7px,5px)}
+  .paper.deste::after{transform:rotate(-3.4deg) translate(-8px,8px)}
+  .gdots{display:flex;gap:10px;justify-content:flex-start;
+    position:relative;z-index:3;
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    margin-top:38px;max-width:min(860px,92vw);padding:4px 2px 10px;
+    scrollbar-width:thin;scrollbar-color:rgba(242,241,236,.3) transparent}
+  .gdots.scatter{overflow:visible}
+  .gdots::-webkit-scrollbar{height:6px}
+  .gdots::-webkit-scrollbar-thumb{background:rgba(242,241,236,.25);border-radius:3px}
+  .gthumb{flex:none;height:60px;padding:0;border:2px solid transparent;border-radius:8px;
+    overflow:hidden;opacity:.5;cursor:pointer;
+    transition:opacity .25s,border-color .25s,transform .25s var(--ease)}
+  .gthumb img{display:block;height:100%;width:auto;min-width:44px;object-fit:cover}
+  .gthumb.on{opacity:1;border-color:var(--ink);transform:scale(1.06)}
+  .gthumb:hover{opacity:.9}
+  @media (max-width:760px){.gthumb{height:48px}}
   .paper img{
     display:block;height:auto;width:auto;
-    max-width:100%;max-height:46vh;
-    min-width:min(560px,74vw);min-height:min(300px,32vh);
-    object-fit:cover;
+    max-width:min(820px,86vw);max-height:56vh;
+    object-fit:contain;
     background:#E4E3DE;
   }
   .paper figcaption{margin-top:11px;color:#333;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
@@ -566,13 +591,14 @@
 <div class="detail" id="detail" aria-hidden="true">
   <div class="d-top">
     <button class="d-back" id="dBack" data-hover>← Geri</button>
-    <span class="d-idx label" id="dIdx">01 / 09</span>
+    <span class="d-idx label" id="dIdx">01 / 18</span>
   </div>
   <div class="d-stage">
     <figure class="paper" id="paper">
       <img id="dImg" src="" alt="">
-      <figcaption><span id="dCapT"></span><span>YEC®</span></figcaption>
+      <figcaption><span id="dCapT"></span><span id="dCapN">YEC®</span></figcaption>
     </figure>
+    <div class="gdots" id="gdots" aria-hidden="true"></div>
   </div>
   <div class="d-notes">
     <span class="p-label label reveal" id="dLabel">Önemli Notlar</span>
@@ -596,35 +622,66 @@
   const isMobile = innerWidth < 760;
 
   /* ================= DATA ================= */
+  const G=(s,n)=>Array.from({length:n},(_,i)=>'assets/'+s+'/'+String(i+1).padStart(2,'0')+'.jpg');
   const PROJECTS = [
     {t:'IKSV Magazine', c:'Editoryal — Dergi Tasarımı', url:'https://www.behance.net/gallery/158089273/IKSV-Magazine-Magazine-Design',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/d8c015158089273.Y3JvcCw0NDE4LDM0NTYsOTgsMA.jpg',
-     n:'Kültür-sanat odaklı bir dergi tasarımı çalışması. Kapak, iç sayfa mizanpajı ve tipografik hiyerarşi üzerine kurgulandı; grid sistemi ve görsel ritim ön planda tutuldu.'},
-    {t:'Da Vinci, Gandhi & X', c:'İllüstrasyon — Portre', url:'https://www.behance.net/gallery/158288687/Leonardo-da-vinci-Gandhi-Malcolm-X',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/52f04f158288687.Y3JvcCw4MjcsNjQ2LDAsMjY2.jpg',
-     n:'Üç tarihi figürün portre illüstrasyonu serisi. Dijital boyama teknikleriyle her karakterin dokusu, ışığı ve ifadesi öne çıkarıldı.'},
+     cover:'assets/iksv/cover.jpg', g:G('iksv',37),
+     n:'İKSV Tasarım Bienali için hazırlanan blog dergisi. Kapak, 36 sayfalık iç mizanpaj ve tipografik hiyerarşi üzerine kurgulandı; grid sistemi ve görsel ritim ön planda tutuldu.'},
+    {t:'Da Vinci, Gandhi & X', c:'İllüstrasyon — Portre Afişleri', url:'https://www.behance.net/gallery/158288687/Leonardo-da-vinci-Gandhi-Malcolm-X',
+     cover:'assets/davinci/cover.jpg', g:G('davinci',3),
+     n:'Üç tarihi figürün 35×50 baskı afiş serisi. Dijital boyama portreler, isimlerden örülen tipografik çerçevelerle birleştirildi; her karakterin dokusu, ışığı ve ifadesi öne çıkarıldı.'},
     {t:'Game Force Magazine', c:'Editoryal — Dergi Tasarımı', url:'https://www.behance.net/gallery/158221619/Game-Force-Magazine',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/a28746158221619.Y3JvcCwyNTU2LDIwMDAsMjIxLDA.jpg',
-     n:'Oyun kültürü dergisi için editoryal tasarım. Enerjik grid, bold tipografi ve oyun görselleriyle dinamik sayfa düzenleri oluşturuldu.'},
+     cover:'assets/gameforce/cover.jpg', g:G('gameforce',21),
+     n:'Oyun kültürü dergisi için 20 sayfalık editoryal tasarım. Enerjik grid, bold tipografi ve oyun görselleriyle dinamik sayfa düzenleri oluşturuldu.'},
     {t:'Perfume', c:'Editoryal — Kitap Kapağı', url:'https://www.behance.net/gallery/167880687/Perfume-Book-Cover-Design',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/e3e205167880687.Y3JvcCwyNTU2LDIwMDAsMjIxLDA.jpg',
+     cover:'https://mir-s3-cdn-cf.behance.net/projects/404/e3e205167880687.Y3JvcCwyNTU2LDIwMDAsMjIxLDA.jpg',
+     g:['https://mir-s3-cdn-cf.behance.net/projects/404/e3e205167880687.Y3JvcCwyNTU2LDIwMDAsMjIxLDA.jpg'],
      n:'Bir kitap kapağı tasarımı çalışması. Tipografi, doku ve kompozisyon dengesi üzerinden hikâyenin atmosferini yansıtan minimal bir yaklaşım benimsendi.'},
     {t:'Pijans', c:'Logo — Marka Kimliği', url:'https://www.behance.net/gallery/167857223/Pijans-Logo-Design',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/3fccd3167857223.Y3JvcCw5NTUsNzQ3LDI2MiwyMQ.jpg',
-     n:'Pijans markası için logo tasarımı. Sade formlar ve akılda kalıcı bir işaret üzerine kurulu, ölçeklenebilir bir kimlik çalışması.'},
+     cover:'assets/pijans/cover.jpg', g:G('pijans',1),
+     n:'Pijans Creative & Production için logo tasarımı. Sade formlar ve akılda kalıcı bir işaret üzerine kurulu, ölçeklenebilir bir kimlik çalışması.'},
     {t:'Ship Bando', c:'Logo — Marka Kimliği', url:'https://www.behance.net/gallery/158532575/Ship-Bando-Logo-Design',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/a3e7e5158532575.Y3JvcCwyODExLDIxOTksNDM4LDA.jpg',
-     n:'Ship Bando için logo tasarımı. Markanın karakterini yansıtan özgün bir amblem ve yazı birlikteliği hedeflendi.'},
+     cover:'assets/sblogo/cover.jpg', g:G('sblogo',4),
+     n:'Ship Bando lojistik markası için logo tasarımı. Sarı-lacivert kurumsal palet, negatif-pozitif kullanım varyantları ve çanta uygulamasıyla kimlik bütünlendi.'},
     {t:'Gamer Force', c:'Logo — Espor', url:'https://www.behance.net/gallery/158221231/Gamer-Force-LOGO',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/46381c158221231.Y3JvcCw5ODYsNzcxLDE5NSwyNA.jpg',
-     n:'Gamer Force için logo çalışması. Espor ve oyun estetiğine uygun, güçlü ve dinamik bir işaret tasarlandı.'},
+     cover:'assets/gflogo/cover.jpg', g:G('gflogo',2),
+     n:'Gamer Force için logo çalışması. Espor ve oyun estetiğine uygun, güçlü ve dinamik bir işaret; farklı zeminler için varyant sistemiyle tasarlandı.'},
     {t:'Digital Painting', c:'İllüstrasyon — Dijital Çizim', url:'https://www.behance.net/gallery/158369381/Digital-Painting',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/dc434a158369381.Y3JvcCw5OTksNzgyLDAsOTk.jpg',
-     n:'Kişisel dijital boyama çalışması. Işık, renk ve doku denemeleriyle atmosfer kurmaya odaklanıldı.'},
+     cover:'assets/digital/cover.jpg', g:G('digital',9),
+     n:'Kişisel dijital boyama seçkisi: Frida Kahlo ve Marilyn Monroe yorumlarından fotoğraf referanslı portrelere. Işık, renk ve doku denemeleriyle atmosfer kurmaya odaklanıldı.'},
     {t:'Ship Bando Social', c:'Sosyal Medya — Instagram', url:'https://www.behance.net/gallery/158535071/Ship-Bando-instagram-post-design',
-     img:'https://mir-s3-cdn-cf.behance.net/projects/404/49da37158535071.Y3JvcCwzNjkyLDI4ODcsMCwzOTI.jpg',
-     n:'Ship Bando için Instagram post tasarımları. Tutarlı bir görsel dil ve tekrar kullanılabilir şablon sistemi kuruldu.'},
+     cover:'assets/sbsocial/cover.jpg', g:G('sbsocial',7),
+     n:'Ship Bando için Instagram post tasarımları. Tutarlı bir görsel dil ve tekrar kullanılabilir şablon sistemiyle 7 parçalık seri kuruldu.'},
+    {t:'Osmanlı Destesi', c:'İllüstrasyon — Bitirme Projesi',
+     cover:'assets/deste/cover.jpg', g:G('deste',12),
+     n:'Üniversite bitirme projesi: Osmanlı padişahları, sultanları ve yeniçerilerinin dijital illüstrasyonlarıyla tasarlanan 52 kartlık özgün iskambil destesi. Papaz, kız ve vale kartlarına dönüşen saray figürleri, desenli kart arkası ve özgün tipografiyle bütünlendi.'},
+    {t:'Caz Festivali Afişi', c:'Afiş — Poster',
+     cover:'assets/caz/cover.jpg', g:G('caz',3),
+     n:'26. İstanbul Caz Festivali için hazırlanan afiş çalışması. Piyano tuşlarından ilham alan ritmik kenar kompozisyonu ve canlı yeşil zeminle festival enerjisi yansıtıldı; baskı uygulaması fotoğraflarla belgelendi.'},
+    {t:'ivy Boutique', c:'Logo — Moda',
+     cover:'assets/logolar/01.jpg', g:['assets/logolar/01.jpg'],
+     n:'ivy Boutique kadın giyim markası için logo tasarımı. El yazısı karakterli tipografi ve yaprak detayıyla zarif, butik bir kimlik hedeflendi.'},
+    {t:'DBF Gayrimenkul', c:'Logo — Gayrimenkul',
+     cover:'assets/logolar/02.jpg', g:['assets/logolar/02.jpg'],
+     n:'DBF Gayrimenkul Danışmanlığı için logo. Çatı formu ve yukarı yönlü ok vurgusuyla güven ve yükseliş duygusu işlendi (Since 2013).'},
+    {t:'Kripto Bando', c:'Logo — Finans',
+     cover:'assets/logolar/03.jpg', g:['assets/logolar/03.jpg'],
+     n:'Kripto Bando için logotype çalışması. "i" noktasının grafik oyunuyla dinamik ve genç bir finans kimliği kuruldu.'},
+    {t:'Chocolat la vie', c:'Logo — Kafe & Gıda',
+     cover:'assets/logolar/04.jpg', g:['assets/logolar/04.jpg'],
+     n:'Chocolat la vie kahve-çikolata markası için amblem. Kahve çekirdeği ve buhar formlarıyla sıcak, artizan bir marka dili oluşturuldu.'},
+    {t:'Europe Dizel', c:'Logo — Enerji',
+     cover:'assets/logolar/05.jpg', g:['assets/logolar/05.jpg'],
+     n:'Europe Dizel Akaryakıt Limited Şirketi için kurumsal logotype. Endüstriyel, net ve güven veren bir yapı benimsendi.'},
+    {t:'Health Turkish', c:'Logo — Sağlık',
+     cover:'assets/logolar/06.jpg', g:['assets/logolar/06.jpg'],
+     n:'Health Turkish sağlık markası için logo. Artı formu ve yeşil-mavi paletle tıbbi güven duygusu öne çıkarıldı.'},
+    {t:'Amerikadanalisveris.com', c:'Logo — E-Ticaret',
+     cover:'assets/logolar/07.jpg', g:['assets/logolar/07.jpg'],
+     n:'Amerikadanalisveris.com için logotype. Alışveriş etiketini andıran vurgu bloğuyla pratik ve hatırlanır bir e-ticaret kimliği tasarlandı.'},
   ];
+  const N=PROJECTS.length;
+  const pad2=n=>String(n).padStart(2,'0');
 
   /* ================= LOADER ================= */
   const loader=document.getElementById('loader');
@@ -638,7 +695,7 @@
     if (!wrap || reduced) return;
     PROJECTS.forEach((p,k)=>{
       const im=document.createElement('img');
-      im.src=p.img; im.alt='';
+      im.src=p.cover; im.alt='';
       if (k===0) im.className='on';
       wrap.appendChild(im);
     });
@@ -730,7 +787,7 @@
     const b=document.createElement('button');
     b.className='orow'; b.setAttribute('data-hover','');
     b.innerHTML='<h3 class="otitle">'+p.t+'<sup>®</sup></h3>'+
-      '<div class="oright"><span class="oidx">(0'+(k+1)+')</span><span class="ocats">'+p.c+'</span></div>';
+      '<div class="oright"><span class="oidx">('+pad2(k+1)+')</span><span class="ocats">'+p.c+'</span></div>';
     b.addEventListener('click',()=>openDetail(k));
     rowsWrap.appendChild(b);
   });
@@ -757,7 +814,18 @@
     return el.querySelectorAll('.chr');
   }
   function scatterNotes(){
-    const groups=[[dLabel,0],[dTitle,.06],[dCat,.14],[dText,.18]];
+    /* kağıt ilk olarak küçük önizleme şeridine çarpar */
+    gdots.classList.add('scatter');
+    gdots.querySelectorAll('.gthumb').forEach(t=>{
+      const dx=(Math.random()*2-1)*230;
+      const rot=(Math.random()*2-1)*190;
+      const delay=(Math.random()*.12).toFixed(2);
+      t.style.transition='transform .8s cubic-bezier(.5,0,.8,.4) '+delay+'s';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        t.style.transform='translate('+dx.toFixed(0)+'px,112vh) rotate('+rot.toFixed(0)+'deg)';
+      }));
+    });
+    const groups=[[dLabel,.08],[dTitle,.14],[dCat,.20],[dText,.24]];
     groups.forEach(([el,base])=>{
       splitChars(el).forEach(chr=>{
         const dx=(Math.random()*2-1)*170;
@@ -772,32 +840,85 @@
     dActions.classList.add('drop');
   }
   function restoreNotes(){
+    gdots.classList.remove('scatter');
     dLabel.textContent=LABEL_TEXT;
     dActions.classList.remove('drop');
   }
 
+  const dCapN=document.getElementById('dCapN');
+  const gdots=document.getElementById('gdots');
+  let gi=0, gArr=[], imgLock=false, closeTimer=null;
+
+  function setPaperImg(){
+    dImg.src=gArr[gi]; dImg.alt=PROJECTS[dCur].t;
+    dCapN.textContent = gArr.length>1 ? ('Görsel '+(gi+1)+' / '+gArr.length) : 'YEC®';
+    gdots.querySelectorAll('.gthumb').forEach((d,i)=>{
+      const on=i===gi; d.classList.toggle('on',on);
+      if (on && d.scrollIntoView) d.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    });
+    if (gArr[gi+1]) { const pre=new Image(); pre.src=gArr[gi+1]; }   /* komşuyu önden yükle */
+  }
+  function buildDots(){
+    gdots.innerHTML='';
+    if (gArr.length<2) return;
+    gArr.forEach((src,i)=>{
+      const b=document.createElement('button');
+      b.className='gthumb'; b.setAttribute('aria-label','Görsel '+(i+1));
+      const im=document.createElement('img');
+      im.loading='lazy'; im.src=src; im.alt='';
+      b.appendChild(im);
+      b.addEventListener('click',()=>goImage(i));
+      gdots.appendChild(b);
+    });
+  }
+  function goImage(target){
+    if (imgLock||navLock||dClosing) return false;
+    if (target<0||target>=gArr.length||target===gi) return false;
+    if (reduced){ gi=target; setPaperImg(); return true; }
+    imgLock=true;
+    const dir = target>gi ? 1 : -1;
+    paper.classList.remove('fall','fast');
+    paper.classList.add(dir===1?'toss-l':'toss-r');   /* üstteki kağıt savrulur */
+    setTimeout(()=>{
+      if (dClosing||!detailOpen){ imgLock=false; return; }
+      gi=target; setPaperImg();
+      dropPaper(true,false);                           /* yenisi düşer, notlar sabit */
+      setTimeout(()=>{ imgLock=false; }, 800);
+    }, 380);
+    return true;
+  }
+  /* kağıda tıkla → sıradaki görsel */
+  paper.addEventListener('click',()=>{
+    if (gArr.length>1 && !imgLock && !navLock && !dClosing) goImage((gi+1)%gArr.length);
+  });
+
   function fillDetail(k){
     const p=PROJECTS[k];
-    dImg.src=p.img; dImg.alt=p.t;
+    gArr = (p.g && p.g.length) ? p.g : [p.cover];
+    gi=0;
+    paper.classList.toggle('deste', gArr.length>1);
+    buildDots();
+    setPaperImg();
     dCapT.textContent=p.t+' — '+p.c.split(' — ')[0];
     dTitle.innerHTML=p.t+'<sup>®</sup>';
     dCat.textContent=p.c;
     dText.textContent=p.n;
-    dIdx.textContent='0'+(k+1)+' / 09';
-    dBehance.href=p.url;
+    dIdx.textContent=pad2(k+1)+' / '+pad2(N);
+    if (p.url){ dBehance.style.display=''; dBehance.href=p.url; }
+    else { dBehance.style.display='none'; }
   }
-  function dropPaper(fast){
+  function dropPaper(fast,notes){
     paper.style.transform=''; paper.style.transition='';
     paper.classList.remove('fall','away','toss-l','toss-r','fast');
     void paper.offsetWidth;
     paper.classList.add('fall');
     if (fast) paper.classList.add('fast');
-    detail.querySelectorAll('.reveal').forEach(r=>{r.classList.remove('in');void r.offsetWidth;r.classList.add('in');});
+    if (notes!==false) detail.querySelectorAll('.reveal').forEach(r=>{r.classList.remove('in');void r.offsetWidth;r.classList.add('in');});
   }
   let navLock=false;
   function goProject(k,dir){                    /* dir: 1 sonraki, -1 önceki */
-    if (navLock || !detailOpen) return;
-    if (reduced){ dCur=k; fillDetail(k); detail.scrollTop=0; return; }
+    if (navLock || !detailOpen || imgLock) return false;
+    if (reduced){ dCur=k; fillDetail(k); detail.scrollTop=0; return true; }
     navLock=true;
     detail.classList.add('fastswap');
     const sw=(dir===1?-26:26)+'px';
@@ -807,15 +928,18 @@
     paper.classList.remove('fall','fast');
     paper.classList.add(dir===1?'toss-l':'toss-r');   /* eski kağıt savrulur */
     setTimeout(()=>{
+      if (dClosing||!detailOpen){ navLock=false; detail.classList.remove('fastswap'); return; }
       dCur=k; fillDetail(k); detail.scrollTop=0;
       detail.querySelectorAll('.d-notes .reveal').forEach(r=>r.classList.remove('swap-out'));
       dropPaper(true);                                 /* yenisi hızlıca düşer */
-      setTimeout(()=>{ navLock=false; detail.classList.remove('fastswap'); }, 1150);
+      setTimeout(()=>{ navLock=false; detail.classList.remove('fastswap'); }, 750);
     }, 400);
+    return true;
   }
   function openDetail(k){
     closePanel();
-    dClosing=false; navLock=false;
+    if (closeTimer){ clearTimeout(closeTimer); closeTimer=null; }
+    dClosing=false; navLock=false; imgLock=false;
     detail.classList.remove('fastswap');
     detail.querySelectorAll('.d-notes .reveal').forEach(r=>r.classList.remove('swap-out'));
     restoreNotes();
@@ -827,21 +951,23 @@
   }
   function closeDetail(instant){
     if (!detailOpen || dClosing) return;
-    detailOpen=false;
+    detailOpen=false; imgLock=false;
+    paper.classList.remove('toss-l','toss-r','fast');
+    paper.style.transform=''; paper.style.transition='';
     closeBtn.classList.remove('show');       /* kapat butonu kalmasın */
     if (instant || reduced){ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); restoreNotes(); return; }
     dClosing=true;
     paper.classList.remove('fall'); paper.classList.add('away');
     setTimeout(scatterNotes, 150);           /* kağıt yazı hizasına inince çarpma başlar */
-    setTimeout(()=>{
+    closeTimer=setTimeout(()=>{
       detail.classList.remove('open'); detail.setAttribute('aria-hidden','true');
       paper.classList.remove('away');
-      restoreNotes(); dClosing=false;
-    }, 1250);
+      restoreNotes(); dClosing=false; closeTimer=null;
+    }, 1350);
   }
   document.getElementById('dBack').addEventListener('click',()=>closeDetail());
-  document.getElementById('dPrev').addEventListener('click',()=>goProject((dCur+8)%9,-1));
-  document.getElementById('dNext').addEventListener('click',()=>goProject((dCur+1)%9,1));
+  document.getElementById('dPrev').addEventListener('click',()=>goProject((dCur+N-1)%N,-1));
+  document.getElementById('dNext').addEventListener('click',()=>goProject((dCur+1)%N,1));
 
   /* panel içerikleri sırayla süzülür */
   document.querySelectorAll('.panel').forEach(p=>{
@@ -877,7 +1003,7 @@
       if (!active) return;
       const dx=e.clientX-sx, dy=e.clientY-sy;
       if (ax===null && Math.hypot(dx,dy)>12) ax = Math.abs(dx)>Math.abs(dy) ? 'h':'v';
-      if (ax==='h' && !reduced){
+      if (ax==='h' && !reduced && !imgLock && !navLock){
         paper.classList.remove('fall','fast');
         paper.style.transform='translateX('+(dx*.4).toFixed(0)+'px) rotate('+(-1.4+dx*.02).toFixed(1)+'deg)';
       }
@@ -886,9 +1012,10 @@
       if (!active) return; active=false;
       if (ax!=='h') return;
       const dx=e.clientX-sx;
-      if (dx<-60)      goProject((dCur+1)%9, 1);   /* sola kaydır → sonraki */
-      else if (dx>60)  goProject((dCur+8)%9,-1);   /* sağa kaydır → önceki */
-      else snapBack();
+      let ok=false;
+      if (dx<-60)      ok = (gi<gArr.length-1) ? goImage(gi+1) : goProject((dCur+1)%N, 1);
+      else if (dx>60)  ok = (gi>0)             ? goImage(gi-1) : goProject((dCur+N-1)%N,-1);
+      if (!ok) snapBack();
     });
     detail.addEventListener('pointercancel',()=>{ if(active){active=false; if(ax==='h')snapBack();} });
   })();
@@ -1007,13 +1134,13 @@
       '</div>';
     const img=el.querySelector('img');
     img.onerror=()=>{ img.style.display='none'; };
-    img.src=p.img;
+    img.src=p.cover;
     /* başlangıç: uzakta ve görünmez → boot'ta süzülerek gelir */
     const tgt=ringsPos(i);
     el.style.transform=tf({a:tgt.a+70, r:tgt.r*3, y:tgt.y-140});
     el.dataset.i=i; el.dataset.k=k;
     el.addEventListener('mouseenter',()=>{
-      if (uiOpen()||!fine) return;
+      if (uiOpen()||!fine||!introDone) return;
       tipT.textContent=p.t; tipC.textContent=p.c.split(' — ')[0];
       tip.classList.add('on');
     });
@@ -1114,8 +1241,10 @@
   let dragging=false,lastX=0,downX=0,downY=0,moved=false;
   const pts=new Map(); let lastDist=0;
   const pdist=()=>{const a=[...pts.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);};
+  addEventListener('dragstart',e=>{ if(e.target.closest('.card3d,.paper,.scene')) e.preventDefault(); });
   addEventListener('pointerdown',e=>{
     if (uiOpen() || e.target.closest('.nav,.bar,.panel,.panel-close,.detail')) return;
+    if (e.pointerType==='mouse') e.preventDefault();      /* seçim + yerleşik sürükleme kapalı */
     pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if (pts.size===1){ dragging=true; moved=false; lastX=downX=e.clientX; downY=e.clientY; }
     else { dragging=false; lastDist=pdist(); }          /* iki parmak: pinch başladı */
@@ -1134,11 +1263,16 @@
       rot += dd;                               /* parmağı ANINDA takip et */
       rotVel = dd;                             /* bırakınca süzülerek devam */
       lastX=e.clientX;
-      if (Math.hypot(e.clientX-downX,e.clientY-downY)>7) moved=true;
+      if (!moved && Math.hypot(e.clientX-downX,e.clientY-downY)>7){
+        moved=true;
+        document.body.classList.add('dragging');          /* hover/tooltip devre dışı */
+        tip.classList.remove('on');
+      }
       markInteract();
     }
   });
   addEventListener('pointerup',e=>{
+    document.body.classList.remove('dragging');
     const wasTap = dragging && !moved && pts.size<=1;
     if (wasTap){
       const c=e.target.closest('.card3d');
@@ -1148,7 +1282,7 @@
     if (pts.size===1){ const r=[...pts.values()][0]; dragging=true; moved=true; lastX=r.x; }
     else if (pts.size===0){ dragging=false; }
   });
-  addEventListener('pointercancel',e=>{ pts.delete(e.pointerId); if(pts.size===0)dragging=false; });
+  addEventListener('pointercancel',e=>{ document.body.classList.remove('dragging'); pts.delete(e.pointerId); if(pts.size===0)dragging=false; });
 
   let lastT=performance.now();
   (function loop(){
