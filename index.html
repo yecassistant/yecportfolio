@@ -404,7 +404,13 @@
   .gthumb img{display:block;height:100%;width:auto;min-width:44px;object-fit:cover}
   .gthumb.on{opacity:1;border-color:var(--ink);transform:scale(1.06)}
   .gthumb:hover{opacity:.9}
-  @media (max-width:760px){.gthumb{height:48px}}
+  @media (max-width:760px){
+    .gthumb{height:48px}
+    .gdots{margin-top:22px}
+    .paper{padding:8px 8px 10px}
+    .d-stage{margin-bottom:20px}
+    .paper img{max-height:52vh}
+  }
   .paper img{
     display:block;height:auto;width:auto;
     max-width:min(820px,86vw);max-height:56vh;
