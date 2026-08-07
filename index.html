@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yunus Can® — Multidisipliner Grafik Tasarımcı</title>
 <meta name="description" content="Yunus Can — İstanbul merkezli multidisipliner grafik tasarımcı. Logo, editoryal tasarım, illüstrasyon ve dijital çizim.">
-<link rel="icon" type="image/png" sizes="64x64" href="assets/icon/favicon-64.png">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icon/icon-192.png">
-<link rel="apple-touch-icon" href="assets/icon/apple-180.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/icon/favicon-64.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon/icon-192.png?v=2">
+<link rel="apple-touch-icon" href="assets/icon/apple-180.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://yecportfolio.com/">
 <meta property="og:title" content="Yunus Can® — Multidisipliner Grafik Tasarımcı">
@@ -229,6 +230,15 @@
   .mode button{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
     padding:8px 16px;border-radius:100px;color:var(--dim);transition:color .3s,background .3s}
   .mode button.active{color:var(--bg);background:var(--ink)}
+  .snd{display:inline-flex;align-items:center;gap:9px;margin-left:auto;
+    border:1px solid var(--line);border-radius:100px;padding:9px 16px;color:var(--dim);
+    background:rgba(16,16,15,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    transition:color .3s,border-color .3s}
+  .snd i{width:7px;height:7px;border-radius:50%;background:rgba(242,241,236,.3);transition:background .3s,box-shadow .3s}
+  .snd:hover{color:var(--ink)}
+  body.sound-on .snd{color:var(--ink);border-color:rgba(242,241,236,.45)}
+  body.sound-on .snd i{background:var(--ink);box-shadow:0 0 10px rgba(242,241,236,.8);animation:sndPulse 1.6s ease-in-out infinite}
+  @keyframes sndPulse{50%{box-shadow:0 0 3px rgba(242,241,236,.35)}}
   .counter a{border-bottom:1px solid var(--ink);padding-bottom:2px;transition:opacity .3s}
   .counter a:hover{opacity:.6}
   .copyright{color:var(--dim)}
@@ -524,6 +534,7 @@
     <button class="active" id="modeRings" data-hover>Rings</button>
     <button id="modeSpiral" data-hover>Spiral</button>
   </div>
+  <button class="snd label" id="sndBtn" data-hover aria-pressed="false"><i></i><span id="sndTxt">Ses Kapalı</span></button>
   <span class="copyright label">© 2026 YEC®</span>
 </div>
 
@@ -1219,11 +1230,67 @@
   }
 
 
+  /* ================= SES SISTEMI ================= */
+  const sfx={whoosh:function(){}};
+  let soundOn=false, sndEnergy=0;
+  let actx=null, ael=null, aGain=null, aFilter=null;
+  const sndBtn=document.getElementById('sndBtn');
+  const sndTxt=document.getElementById('sndTxt');
+  function initAudio(){
+    if (ael) return;
+    ael=new Audio('assets/audio/ambient.mp3'); ael.loop=true; ael.preload='auto';
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if (AC){
+      try{
+        actx=new AC();
+        const src=actx.createMediaElementSource(ael);
+        aFilter=actx.createBiquadFilter(); aFilter.type='lowpass'; aFilter.frequency.value=700; aFilter.Q.value=.65;
+        aGain=actx.createGain(); aGain.gain.value=0;
+        src.connect(aFilter); aFilter.connect(aGain); aGain.connect(actx.destination);
+      }catch(e){ actx=null; }
+    }
+    if (!actx) ael.volume=0;
+  }
+  function setSound(on){
+    soundOn=on;
+    document.body.classList.toggle('sound-on',on);
+    if (sndTxt) sndTxt.textContent = on ? 'Ses Açık' : 'Ses Kapalı';
+    if (sndBtn) sndBtn.setAttribute('aria-pressed', on?'true':'false');
+    if (on){
+      initAudio();
+      if (actx && actx.state==='suspended') actx.resume();
+      const pr=ael.play(); if (pr && pr.catch) pr.catch(function(){});
+    } else {
+      if (actx) actx.suspend(); else if (ael) ael.pause();
+    }
+  }
+  if (sndBtn) sndBtn.addEventListener('click',function(){ setSound(!soundOn); });
+  document.addEventListener('pointerdown',function(){
+    if (soundOn && ael && ael.paused){
+      if (actx && actx.state==='suspended') actx.resume();
+      var p=ael.play(); if (p && p.catch) p.catch(function(){});
+    }
+  }, true);
+  function audioTick(){
+    if (!ael) return;
+    const raw=Math.min(1, Math.abs(rotVel)/1.3 + (dragging?.3:0) + Math.abs(zoomT-zoom)*1.6);
+    sndEnergy += (raw-sndEnergy)*.06;
+    const duck = uiOpen()? .55 : 1;
+    const gT = soundOn ? (.30 + sndEnergy*.24)*duck : 0;
+    if (aGain){
+      aGain.gain.value += (gT-aGain.gain.value)*.08;
+      aFilter.frequency.value += ((620 + sndEnergy*4200)*duck - aFilter.frequency.value)*.07;
+      ael.playbackRate = 1 + sndEnergy*.05;
+    } else {
+      ael.volume += (gT*.8-ael.volume)*.08;
+    }
+  }
+
   /* mod düğmeleri */
   const btnR=document.getElementById('modeRings');
   const btnS=document.getElementById('modeSpiral');
-  btnR.addEventListener('click',()=>{btnR.classList.add('active');btnS.classList.remove('active');placeCards(ringsPos,0,.022);});
-  btnS.addEventListener('click',()=>{btnS.classList.add('active');btnR.classList.remove('active');placeCards(spiralPos,0,.022);});
+  btnR.addEventListener('click',()=>{btnR.classList.add('active');btnS.classList.remove('active');placeCards(ringsPos,0,.022);sfx.whoosh(-1,.7);});
+  btnS.addEventListener('click',()=>{btnS.classList.add('active');btnR.classList.remove('active');placeCards(spiralPos,0,.022);sfx.whoosh(1,.7);});
 
   /* dönüş + zoom + sürükleme */
   let rot=0, rotVel=0, zoom=isMobile?0.76:1, zoomT=zoom, mouseNX=0, mouseNY=0;
@@ -1298,6 +1365,7 @@
     zoom += (zoomT-zoom)*.06;
     world.style.transform='scale3d('+zoom+','+zoom+','+zoom+') rotateY('+rot+'deg)';
     yecFrame();
+    audioTick();
     if (!reduced) planetFrame(dt);
     if (!reduced && fine){
       tilt.style.transform='rotateX('+(-mouseNY*3.5)+'deg) rotateY('+(mouseNX*2.5)+'deg)';
