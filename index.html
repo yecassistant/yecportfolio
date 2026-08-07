@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yunus Can® — Multidisipliner Grafik Tasarımcı</title>
 <meta name="description" content="Yunus Can — İstanbul merkezli multidisipliner grafik tasarımcı. Logo, editoryal tasarım, illüstrasyon ve dijital çizim.">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/icon/favicon-64.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon/apple-180.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yecportfolio.com/">
+<meta property="og:title" content="Yunus Can® — Multidisipliner Grafik Tasarımcı">
+<meta property="og:description" content="Logo, editoryal tasarım, illüstrasyon ve dijital çizimden oluşan 3D portfolyo evreni.">
+<meta property="og:image" content="https://yecportfolio.com/assets/icon/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -186,22 +195,12 @@
     font-family:'Anton',Impact,sans-serif;
     font-size:clamp(150px,47vw,300px);line-height:.95;letter-spacing:.01em;
     max-width:96vw;white-space:nowrap;
-    background:linear-gradient(105deg,#7e7e7b 0%,#ffffff 16%,#4c4c4a 36%,#f7f7f4 54%,#6c6c69 70%,#ffffff 88%,#8a8a87 100%);
-    background-size:230% 100%;
+    background-color:#3a3a38;
+    background-size:cover;background-position:center 32%;
     -webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:sheen 4.6s linear infinite, lpop 1s var(--ease) both;
+    animation:lpop 1s var(--ease) both;
     filter:drop-shadow(0 10px 34px rgba(0,0,0,.65));
   }
-  .loader-flick{
-    position:absolute;left:50%;top:50%;z-index:1;
-    transform:translate(-50%,-52%);
-    width:min(64vw,430px);aspect-ratio:4/3;
-    border-radius:14px;overflow:hidden;
-  }
-  .loader-flick img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
-  .loader-flick img.on{opacity:1}
-  .loader-flick::after{content:"";position:absolute;inset:0;
-    background:radial-gradient(ellipse at center, rgba(19,19,18,.12), rgba(19,19,18,.58))}
   .loader-yec sup{font-size:.16em;vertical-align:top;font-family:'Archivo',sans-serif;font-weight:600}
   @keyframes lpop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
   .loader-bottom{
@@ -502,7 +501,6 @@
 </div>
 
 <div class="loader" id="loader" aria-hidden="true">
-  <div class="loader-flick" id="loaderFlick" aria-hidden="true"></div>
   <div class="loader-yec">YEC<sup>®</sup></div>
   <div class="loader-bottom">
     <span class="label">Yunus Can® — Portfolio</span>
@@ -692,26 +690,21 @@
   /* ================= LOADER ================= */
   const loader=document.getElementById('loader');
   const lnum=document.getElementById('loaderNum');
-  const LOAD_MS=2600;                        /* biraz daha uzun: işler geçidi için */
+  const LOAD_MS=4000;                        /* harf içi geçidin tadı çıksın */
   let booted=false, introDone=false, flickTimer=null;
 
-  /* YEC arkasında hızlı iş geçidi */
+  /* Isler HARFLERIN ICINDE akiyor - YEC gorsellerden oyulmus pencere */
   (function flick(){
-    const wrap=document.getElementById('loaderFlick');
-    if (!wrap || reduced) return;
-    PROJECTS.forEach((p,k)=>{
-      const im=document.createElement('img');
-      im.src=p.cover; im.alt='';
-      if (k===0) im.className='on';
-      wrap.appendChild(im);
-    });
-    const imgs=wrap.querySelectorAll('img');
-    let idx=0;
-    flickTimer=setInterval(()=>{
-      imgs[idx].classList.remove('on');
-      idx=(idx+1)%imgs.length;
-      imgs[idx].classList.add('on');
-    },160);
+    var yecEl=document.querySelector('.loader-yec');
+    if (!yecEl || reduced) return;
+    var covers=PROJECTS.filter(function(p){return p.cover && p.cover.indexOf('/logolar/')===-1;}).map(function(p){return p.cover;});
+    covers.forEach(function(src){ var pre=new Image(); pre.src=src; });
+    var idx=0;
+    yecEl.style.backgroundImage="url('"+covers[0]+"')";
+    flickTimer=setInterval(function(){
+      idx=(idx+1)%covers.length;
+      yecEl.style.backgroundImage="url('"+covers[idx]+"')";
+    },190);
   })();
 
   function boot(){
@@ -733,6 +726,7 @@
       else setTimeout(boot,120);
     })(t0);
   }
+  if (loader) loader.addEventListener('pointerdown',boot);   /* tıkla → atla */
   setTimeout(boot,LOAD_MS+2000);
   addEventListener('error',()=>boot());
 
@@ -1109,7 +1103,7 @@
 
   const RINGS = isMobile
     ? [ {r:170, n:5, y:-175}, {r:235, n:7, y:0}, {r:190, n:6, y:170} ]
-    : [ {r:430, n:7, y:-165}, {r:565, n:9, y:0}, {r:700, n:11, y:165} ];
+    : [ {r:440, n:8, y:-115}, {r:600, n:10, y:125} ];
   const CARD_COUNT = RINGS.reduce((s,r)=>s+r.n,0);
 
   function ringsPos(i){
