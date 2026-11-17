@@ -793,6 +793,47 @@
   }
   .hint{white-space:nowrap}
   @media (max-width:420px){.hint{letter-spacing:.14em;font-size:10px}}
+
+  /* ===== v41: asistan pencere değil, sahnenin içinde yüzen katman; kendi rengi var ===== */
+  :root{--ai:#9DB2FF;--ai-bg:rgba(157,178,255,.10);--ai-line:rgba(157,178,255,.30);--ybw:min(440px,38vw)}
+  .yb{top:auto;right:20px;bottom:20px;height:min(700px,calc(100vh - 110px));border:1px solid var(--ai-line);border-radius:22px;overflow:hidden;
+    background:rgba(17,17,16,.74);-webkit-backdrop-filter:blur(22px) saturate(1.2);backdrop-filter:blur(22px) saturate(1.2);
+    box-shadow:0 30px 80px rgba(0,0,0,.55);transform-origin:100% 100%;transform:translate3d(0,26px,0) scale(.95);opacity:0;
+    transition:transform .5s var(--ease),opacity .3s,visibility 0s linear .5s}
+  .yb.open{transform:none;opacity:1;transition:transform .5s var(--ease),opacity .3s,visibility 0s}
+  .q1 .yb,.q2 .yb{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(17,17,16,.95)}
+  body.yb-open:not(.yb-full) .scene{transform:translate3d(calc(var(--ybw) / -2 - 10px),0,0)}
+  .yb-head{padding:14px 14px 12px 20px;border-bottom-color:var(--ai-line)}
+  .yb-mark{color:var(--ai);position:relative}
+  .yb-mark::after{content:"";position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--ai);opacity:.22;animation:halo 2.6s ease-in-out infinite}
+  .yb-id span{color:var(--ai)}
+  .yb-hello{font-size:44px;margin:8px 0 14px}
+  @supports (width:clamp(1px,2px,3px)){.yb-hello{font-size:clamp(36px,5.6vh,58px)}}
+  .yb-lead{margin-bottom:18px}
+  .yb-st{padding:12px 2px}
+  .yb-st i{color:var(--ai)}
+  .yb-note{background:var(--ai-bg);border:1px solid var(--ai-line);color:var(--ink);border-radius:4px 16px 16px 16px}
+  .yb-step{color:var(--ai)}
+  .yb-form{border-top-color:var(--ai-line);padding:10px 12px 10px 20px}
+  .yb-form:focus-within{border-top-color:var(--ai)}
+  .yb-form button{background:var(--ai);color:#0e0e0d}
+  .yb-links a{background:var(--ai);color:#0e0e0d}
+  .yb-tl div::before{background:var(--ai)}
+  .yb button:focus-visible,.yb a:focus-visible{outline-color:var(--ai)}
+  .ask>span:first-child,.ask svg,.nav-ask{color:var(--ai)}
+  .d-ask{border-color:var(--ai-line);color:var(--ai)}
+  @media (hover:hover){.yb-chip:hover{background:var(--ai);border-color:var(--ai);color:#0e0e0d}}
+  @media (max-width:900px){
+    .yb{left:8px;right:8px;bottom:calc(8px + var(--sb));width:auto;height:62vh;border-left:1px solid var(--ai-line);transform-origin:50% 100%;transform:translate3d(0,40px,0) scale(.97)}
+    .yb.open{transform:none}
+    body.yb-full .scene{transform:translate3d(0,-21vh,0) scale(.86)}
+    body.yb-full .hint{opacity:0}
+    .yb-head,.yb-form{padding-left:16px}
+    .yb-body{padding:14px 16px 8px}
+  }
+  @media (max-height:520px){.yb{height:calc(100vh - 16px);bottom:8px}}
+  @media (prefers-reduced-motion:reduce){.yb-mark::after{animation:none}}
+  body.yb-full .bar{opacity:0;pointer-events:none}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Yunus Can","alternateName":"YEC","jobTitle":"Multidisipliner Grafik Tasarımcı","url":"https://yecportfolio.com","email":"mailto:08yec.design@gmail.com","address":{"@type":"PostalAddress","addressLocality":"İstanbul","addressCountry":"TR"},"sameAs":["https://www.behance.net/yunusenescan","https://linkedin.com/in/yunusscan"],"knowsAbout":["Logo Tasarımı","Marka Kimliği","Editoryal Tasarım","İllüstrasyon","Web Tasarımı","Web Geliştirme","Sosyal Medya Yönetimi"],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Web Tasarım & Geliştirme","url":"https://dbfnakliyat.com"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Sosyal Medya Yönetimi"}}]}
@@ -3107,7 +3148,7 @@ function createBrain(PROJECTS){
     const body=document.getElementById('ybBody'), log=document.getElementById('ybLog'), form=document.getElementById('ybForm'), inp=document.getElementById('ybIn');
     const mq=matchMedia('(max-width:900px)');
     let open=false, busy=null, chipsEl=null;
-    const covers=()=>mq.matches;
+    const small=()=>mq.matches, covers=()=>false;     /* artık sahneyi kapatmıyor: içinde yüzen bir katman */
     const env=()=>({detail:detailOpen, cur:dCur, panel:panelOpen, sound:soundOn, mode:curMode, touch:coarse});
     const el=(tag,cls,txt)=>{ const e=document.createElement(tag); if (cls) e.className=cls; if (txt!=null) e.textContent=txt; return e; };
     const toEnd=()=>{ body.scrollTop=body.scrollHeight; };
@@ -3115,18 +3156,20 @@ function createBrain(PROJECTS){
     function setOpen(on){
       if (open===on) return; open=on;
       yb.classList.toggle('open',on); yb.setAttribute('aria-hidden',on?'false':'true');
-      document.body.classList.toggle('yb-open',on); document.body.classList.toggle('yb-full',on&&covers());
+      document.body.classList.toggle('yb-open',on); document.body.classList.toggle('yb-full',on&&small());
       if (on){ cancelSpot(); tip.classList.remove('on'); if (fine) setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(e){ inp.focus(); } },320); }
       else { inp.blur(); fitVV(); }
       govSkip(1500); histSoon();
     }
-    const mqSync=()=>{ document.body.classList.toggle('yb-full',open&&covers()); };
+    const mqSync=()=>{ document.body.classList.toggle('yb-full',open&&small()); fitVV(); };
     if (mq.addEventListener) mq.addEventListener('change',mqSync); else if (mq.addListener) mq.addListener(mqSync);
     /* telefon klavyesi: paneli görünen alana sığdır (iOS) */
     const vv=window.visualViewport;
     function fitVV(){
-      if (!vv || !open || !covers()){ yb.style.height=''; yb.style.top=''; yb.style.bottom=''; return; }
-      yb.style.bottom='auto'; yb.style.top=vv.offsetTop+'px'; yb.style.height=vv.height+'px'; toEnd();
+      if (!vv || !open || !small()){ yb.style.height=''; yb.style.bottom=''; return; }
+      const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop);
+      if (kb<60){ yb.style.height=''; yb.style.bottom=''; return; }
+      yb.style.bottom=(kb+8)+'px'; yb.style.height=Math.min(vv.height-16,Math.round(innerHeight*.62))+'px'; toEnd();
     }
     if (vv){ vv.addEventListener('resize',fitVV); vv.addEventListener('scroll',fitVV); }
 
@@ -3178,7 +3221,7 @@ function createBrain(PROJECTS){
         exhibits(a,wrap);
         chipsEl=chipRow(a.chips); if (chipsEl) wrap.appendChild(chipsEl);
         toEnd();
-        if (a.spot!==undefined && a.spot>-1 && !covers() && !a.act) spotCard(a.spot);
+        if (a.spot!==undefined && a.spot>-1 && !a.act) spotCard(a.spot);
       };
       if (!a.t){ note.remove(); done(); return; }
       if (instant || reduced){ done(); return; }
@@ -3191,10 +3234,10 @@ function createBrain(PROJECTS){
       if (!a) return;
       if (a.type==='open'){ const k=a.k; if (!PROJECTS[k]) return; setOpen(false); if (detailOpen){ if (dCur!==k) goProject(k,k>dCur?1:-1); } else openDetail(k); }
       else if (a.type==='panel'){ setOpen(false); openPanel(a.n); }
-      else if (a.type==='mode'){ setMode(a.m); if (covers()||uiOpen()){ setOpen(false); if (detailOpen) closeDetail(); closePanel(); } }
+      else if (a.type==='mode'){ setMode(a.m); if (uiOpen()){ setOpen(false); if (detailOpen) closeDetail(); closePanel(); } }
       else if (a.type==='sound'){ setSound(!!a.on); }
       else if (a.type==='mail'){ location.href='mailto:08yec.design@gmail.com?subject='+encodeURIComponent('yecportfolio.com üzerinden'); }
-      else if (a.type==='next' || a.type==='prev'){ if (detailOpen){ const d=a.type==='next'?1:-1; goProject((dCur+d+N)%N,d); if (covers()) setOpen(false); } }
+      else if (a.type==='next' || a.type==='prev'){ if (detailOpen){ const d=a.type==='next'?1:-1; goProject((dCur+d+N)%N,d); if (small()) setOpen(false); } }
       else if (a.type==='zoom'){ if (detailOpen){ setOpen(false); openZoom(); } }
       else if (a.type==='home'){ setOpen(false); if (detailOpen) closeDetail(); closePanel(); }
       else if (a.type==='close'){ setOpen(false); }
