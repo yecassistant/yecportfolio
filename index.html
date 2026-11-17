@@ -801,7 +801,7 @@
     box-shadow:0 30px 80px rgba(0,0,0,.55);transform-origin:100% 100%;transform:translate3d(0,26px,0) scale(.95);opacity:0;
     transition:transform .5s var(--ease),opacity .3s,visibility 0s linear .5s}
   .yb.open{transform:none;opacity:1;transition:transform .5s var(--ease),opacity .3s,visibility 0s}
-  .q1 .yb,.q2 .yb{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(17,17,16,.95)}
+  .q1 .yb,.q2 .yb{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(17,17,16,.97)}
   body.yb-open:not(.yb-full) .scene{transform:translate3d(calc(var(--ybw) / -2 - 10px),0,0)}
   .yb-head{padding:14px 14px 12px 20px;border-bottom-color:var(--ai-line)}
   .yb-mark{color:var(--ai);position:relative}
@@ -835,6 +835,44 @@
   @media (prefers-reduced-motion:reduce){.yb-mark::after{animation:none}}
   body.yb-full .bar{opacity:0;pointer-events:none}
   .yb-on::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#59C96A;margin-right:6px;vertical-align:middle;position:relative;top:-1px}
+
+  /* ===== dergi: çevrilen kitap (StPageFlip) ===== */
+  .stf__parent{position:relative;display:block;box-sizing:border-box;transform:translateZ(0);-ms-touch-action:pan-y;touch-action:pan-y}
+  .stf__wrapper{position:relative;width:100%;box-sizing:border-box}
+  .stf__parent canvas{position:absolute;width:100%;height:100%;left:0;top:0}
+  .stf__block{position:absolute;width:100%;height:100%;box-sizing:border-box;perspective:2000px}
+  .stf__item{display:none;position:absolute;transform-style:preserve-3d}
+  .stf__outerShadow,.stf__innerShadow,.stf__hardShadow,.stf__hardInnerShadow{position:absolute;left:0;top:0}
+  .pm-probe{position:absolute;visibility:hidden;pointer-events:none;width:var(--pmw);height:var(--pmh);left:0;top:0}
+  .d-stage{position:relative}
+  .bookwrap{display:none;width:100%}
+  .d-stage.book-on .paper{display:none}
+  .d-stage.book-on .bookwrap{display:block;animation:bookIn .7s var(--ease) both}
+  .bookwrap.away{animation:bookOut .5s cubic-bezier(.5,0,.8,.4) both !important}
+  @keyframes bookIn{from{opacity:0;transform:translate3d(0,-34px,0) scale(.95)}to{opacity:1;transform:none}}
+  @keyframes bookOut{to{opacity:0;transform:translate3d(0,60px,0) scale(.96)}}
+  .book-host{margin:0 auto;max-width:100%;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .bk-pg{background:#F4F3EE;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.5)}
+  .bk-pg img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
+  .bk-pg::after{content:"";position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+  .bk-pg.--left::after{background:linear-gradient(270deg,rgba(0,0,0,.26),rgba(0,0,0,.06) 7%,rgba(0,0,0,0) 16%)}
+  .bk-pg.--right::after{background:linear-gradient(90deg,rgba(0,0,0,.26),rgba(0,0,0,.06) 7%,rgba(0,0,0,0) 16%)}
+  .book-cap{display:flex;align-items:center;justify-content:center;margin-top:18px;color:var(--dim)}
+  .bk-n{min-width:9.5em;text-align:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink)}
+  .bk-btn{background:none;border:1px solid var(--line);color:var(--ink);border-radius:99px;min-width:40px;height:40px;padding:0 13px;font:inherit;font-size:20px;line-height:1;cursor:pointer;transition:background .25s,color .25s}
+  .bk-zoom{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-left:14px}
+  .book-tip{text-align:center;font-size:12px;color:var(--dim);margin-top:10px}
+  .d-mag{display:none;position:absolute;left:50%;bottom:calc(clamp(12px,1.6vw,18px) + 44px);transform:translateX(-50%);z-index:2;
+    background:var(--bg);color:var(--ink);border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:11px 20px;font:inherit;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+  .d-mag i{font-style:normal;margin-left:6px}
+  .paper.mag .d-mag{display:block}
+  .zoom-nav{display:none;position:absolute;top:50%;margin-top:-24px;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(19,19,18,.6);color:#F2F1EC;font-size:24px;line-height:1;cursor:pointer;z-index:2}
+  .zoom.multi .zoom-nav{display:block}
+  .zoom-p{left:calc(14px + var(--sl))}.zoom-n{right:calc(14px + var(--sr))}
+  .zoom.zoomed .zoom-nav{opacity:.35}
+  @media (hover:hover){.bk-btn:hover,.d-mag:hover{background:var(--ink);color:var(--bg)}}
+  @media (prefers-reduced-motion:reduce){.d-stage.book-on .bookwrap,.bookwrap.away{animation:none !important}}
+  @media (min-width:1080px) and (min-height:600px){.book-tip{display:none}.book-cap{margin-top:14px}.bk-btn{height:36px;min-width:36px}}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Yunus Can","alternateName":"YEC","jobTitle":"Multidisipliner Grafik Tasarımcı","url":"https://yecportfolio.com","email":"mailto:08yec.design@gmail.com","address":{"@type":"PostalAddress","addressLocality":"İstanbul","addressCountry":"TR"},"sameAs":["https://www.behance.net/yunusenescan","https://linkedin.com/in/yunusscan"],"knowsAbout":["Logo Tasarımı","Marka Kimliği","Editoryal Tasarım","İllüstrasyon","Web Tasarımı","Web Geliştirme","Sosyal Medya Yönetimi"],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Web Tasarım & Geliştirme","url":"https://dbfnakliyat.com"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Sosyal Medya Yönetimi"}}]}
@@ -992,6 +1030,8 @@
 <div class="zoom" id="zoom" aria-hidden="true" role="dialog" aria-label="Büyütülmüş görsel">
   <img id="zoomImg" src="" alt="" decoding="async" draggable="false">
   <button class="zoom-x" id="zoomX" type="button" data-hover aria-label="Büyüteci kapat">Kapat ✕</button>
+  <button class="zoom-nav zoom-p" id="zoomP" type="button" data-hover aria-label="Önceki görsel">‹</button>
+  <button class="zoom-nav zoom-n" id="zoomN" type="button" data-hover aria-label="Sonraki görsel">›</button>
   <span class="zoom-hint" aria-hidden="true">Yakınlaştırmak için çift dokun ya da iki parmakla aç</span>
 </div>
 
@@ -1004,8 +1044,20 @@
     <figure class="paper" id="paper">
       <img id="dImg" src="" alt="" decoding="async">
       <button class="d-zoom" id="dZoom" type="button" data-hover aria-label="Görseli büyüt"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="d-mag" id="dMag" type="button" data-hover>Dergiyi aç <i aria-hidden="true">→</i></button>
       <figcaption><span id="dCapT"></span><span id="dCapN">YEC®</span></figcaption>
     </figure>
+    <div class="bookwrap" id="bookWrap">
+      <div class="book-host" id="bookHost"></div>
+      <div class="book-cap">
+        <button type="button" class="bk-btn" id="bkPrev" data-hover aria-label="Önceki sayfa">‹</button>
+        <span class="bk-n" id="bkN" aria-live="polite"></span>
+        <button type="button" class="bk-btn" id="bkNext" data-hover aria-label="Sonraki sayfa">›</button>
+        <button type="button" class="bk-btn bk-zoom" id="bkZoom" data-hover>Büyüt</button>
+      </div>
+      <p class="book-tip" id="bkTip"></p>
+    </div>
+    <i class="pm-probe" id="pmProbe" aria-hidden="true"></i>
     <div class="gdots" id="gdots" role="group" aria-label="Projenin görselleri"></div>
   </div>
   <div class="d-notes">
@@ -1036,6 +1088,31 @@
 </div>
 
 <script>
+/*! StPageFlip (page-flip 2.0.7) — dergilerdeki sayfa çevirme için.
+MIT License
+
+Copyright (c) 2020 Nodlik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).St={})}(this,(function(t){"use strict";class e{constructor(t,e){this.state={angle:0,area:[],position:{x:0,y:0},hardAngle:0,hardDrawingAngle:0},this.createdDensity=e,this.nowDrawingDensity=this.createdDensity,this.render=t}setDensity(t){this.createdDensity=t,this.nowDrawingDensity=t}setDrawingDensity(t){this.nowDrawingDensity=t}setPosition(t){this.state.position=t}setAngle(t){this.state.angle=t}setArea(t){this.state.area=t}setHardDrawingAngle(t){this.state.hardDrawingAngle=t}setHardAngle(t){this.state.hardAngle=t,this.state.hardDrawingAngle=t}setOrientation(t){this.orientation=t}getDrawingDensity(){return this.nowDrawingDensity}getDensity(){return this.createdDensity}getHardAngle(){return this.state.hardAngle}}class i extends e{constructor(t,e,i){super(t,i),this.image=null,this.isLoad=!1,this.loadingAngle=0,this.image=new Image,this.image.src=e}draw(t){const e=this.render.getContext(),i=this.render.convertToGlobal(this.state.position),s=this.render.getRect().pageWidth,n=this.render.getRect().height;e.save(),e.translate(i.x,i.y),e.beginPath();for(let t of this.state.area)null!==t&&(t=this.render.convertToGlobal(t),e.lineTo(t.x-i.x,t.y-i.y));e.rotate(this.state.angle),e.clip(),this.isLoad?e.drawImage(this.image,0,0,s,n):this.drawLoader(e,{x:0,y:0},s,n),e.restore()}simpleDraw(t){const e=this.render.getRect(),i=this.render.getContext(),s=e.pageWidth,n=e.height,h=1===t?e.left+e.pageWidth:e.left,r=e.top;this.isLoad?i.drawImage(this.image,h,r,s,n):this.drawLoader(i,{x:h,y:r},s,n)}drawLoader(t,e,i,s){t.beginPath(),t.strokeStyle="rgb(200, 200, 200)",t.fillStyle="rgb(255, 255, 255)",t.lineWidth=1,t.rect(e.x+1,e.y+1,i-1,s-1),t.stroke(),t.fill();const n={x:e.x+i/2,y:e.y+s/2};t.beginPath(),t.lineWidth=10,t.arc(n.x,n.y,20,this.loadingAngle,3*Math.PI/2+this.loadingAngle),t.stroke(),t.closePath(),this.loadingAngle+=.07,this.loadingAngle>=2*Math.PI&&(this.loadingAngle=0)}load(){this.isLoad||(this.image.onload=()=>{this.isLoad=!0})}newTemporaryCopy(){return this}getTemporaryCopy(){return this}hideTemporaryCopy(){}}class s{constructor(t,e){this.pages=[],this.currentPageIndex=0,this.currentSpreadIndex=0,this.landscapeSpread=[],this.portraitSpread=[],this.render=e,this.app=t,this.currentPageIndex=0,this.isShowCover=this.app.getSettings().showCover}destroy(){this.pages=[]}createSpread(){this.landscapeSpread=[],this.portraitSpread=[];for(let t=0;t<this.pages.length;t++)this.portraitSpread.push([t]);let t=0;this.isShowCover&&(this.pages[0].setDensity("hard"),this.landscapeSpread.push([t]),t++);for(let e=t;e<this.pages.length;e+=2)e<this.pages.length-1?this.landscapeSpread.push([e,e+1]):(this.landscapeSpread.push([e]),this.pages[e].setDensity("hard"))}getSpread(){return"landscape"===this.render.getOrientation()?this.landscapeSpread:this.portraitSpread}getSpreadIndexByPage(t){const e=this.getSpread();for(let i=0;i<e.length;i++)if(t===e[i][0]||t===e[i][1])return i;return null}getPageCount(){return this.pages.length}getPages(){return this.pages}getPage(t){if(t>=0&&t<this.pages.length)return this.pages[t];throw new Error("Invalid page number")}nextBy(t){const e=this.pages.indexOf(t);return e<this.pages.length-1?this.pages[e+1]:null}prevBy(t){const e=this.pages.indexOf(t);return e>0?this.pages[e-1]:null}getFlippingPage(t){const e=this.currentSpreadIndex;if("portrait"===this.render.getOrientation())return 0===t?this.pages[e].newTemporaryCopy():this.pages[e-1];{const i=0===t?this.getSpread()[e+1]:this.getSpread()[e-1];return 1===i.length||0===t?this.pages[i[0]]:this.pages[i[1]]}}getBottomPage(t){const e=this.currentSpreadIndex;if("portrait"===this.render.getOrientation())return 0===t?this.pages[e+1]:this.pages[e-1];{const i=0===t?this.getSpread()[e+1]:this.getSpread()[e-1];return 1===i.length?this.pages[i[0]]:0===t?this.pages[i[1]]:this.pages[i[0]]}}showNext(){this.currentSpreadIndex<this.getSpread().length&&(this.currentSpreadIndex++,this.showSpread())}showPrev(){this.currentSpreadIndex>0&&(this.currentSpreadIndex--,this.showSpread())}getCurrentPageIndex(){return this.currentPageIndex}show(t=null){if(null===t&&(t=this.currentPageIndex),t<0||t>=this.pages.length)return;const e=this.getSpreadIndexByPage(t);null!==e&&(this.currentSpreadIndex=e,this.showSpread())}getCurrentSpreadIndex(){return this.currentSpreadIndex}setCurrentSpreadIndex(t){if(!(t>=0&&t<this.getSpread().length))throw new Error("Invalid page");this.currentSpreadIndex=t}showSpread(){const t=this.getSpread()[this.currentSpreadIndex];2===t.length?(this.render.setLeftPage(this.pages[t[0]]),this.render.setRightPage(this.pages[t[1]])):"landscape"===this.render.getOrientation()&&t[0]===this.pages.length-1?(this.render.setLeftPage(this.pages[t[0]]),this.render.setRightPage(null)):(this.render.setLeftPage(null),this.render.setRightPage(this.pages[t[0]])),this.currentPageIndex=t[0],this.app.updatePageIndex(this.currentPageIndex)}}class n extends s{constructor(t,e,i){super(t,e),this.imagesHref=i}load(){for(const t of this.imagesHref){const e=new i(this.render,t,"soft");e.load(),this.pages.push(e)}this.createSpread()}}class h{static GetDistanceBetweenTwoPoint(t,e){return null===t||null===e?1/0:Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2))}static GetSegmentLength(t){return h.GetDistanceBetweenTwoPoint(t[0],t[1])}static GetAngleBetweenTwoLine(t,e){const i=t[0].y-t[1].y,s=e[0].y-e[1].y,n=t[1].x-t[0].x,h=e[1].x-e[0].x;return Math.acos((i*s+n*h)/(Math.sqrt(i*i+n*n)*Math.sqrt(s*s+h*h)))}static PointInRect(t,e){return null===e?null:e.x>=t.left&&e.x<=t.width+t.left&&e.y>=t.top&&e.y<=t.top+t.height?e:null}static GetRotatedPoint(t,e,i){return{x:t.x*Math.cos(i)+t.y*Math.sin(i)+e.x,y:t.y*Math.cos(i)-t.x*Math.sin(i)+e.y}}static LimitPointToCircle(t,e,i){if(h.GetDistanceBetweenTwoPoint(t,i)<=e)return i;const s=t.x,n=t.y,r=i.x,o=i.y;let a=Math.sqrt(Math.pow(e,2)*Math.pow(s-r,2)/(Math.pow(s-r,2)+Math.pow(n-o,2)))+s;i.x<0&&(a*=-1);let g=(a-s)*(n-o)/(s-r)+n;return s-r+n===0&&(g=e),{x:a,y:g}}static GetIntersectBetweenTwoSegment(t,e,i){return h.PointInRect(t,h.GetIntersectBeetwenTwoLine(e,i))}static GetIntersectBeetwenTwoLine(t,e){const i=t[0].y-t[1].y,s=e[0].y-e[1].y,n=t[1].x-t[0].x,h=e[1].x-e[0].x,r=t[0].x*t[1].y-t[1].x*t[0].y,o=e[0].x*e[1].y-e[1].x*e[0].y,a=i*o-s*r,g=n*o-h*r,l=-(r*h-o*n)/(i*h-s*n),d=-(i*o-s*r)/(i*h-s*n);if(isFinite(l)&&isFinite(d))return{x:l,y:d};if(Math.abs(a-g)<.1)throw new Error("Segment included");return null}static GetCordsFromTwoPoint(t,e){const i=Math.abs(t.x-e.x),s=Math.abs(t.y-e.y),n=Math.max(i,s),h=[t];function r(t,e,i,s,n){return e>t?t+n*(i/s):e<t?t-n*(i/s):t}for(let o=1;o<=n;o+=1)h.push({x:r(t.x,e.x,i,n,o),y:r(t.y,e.y,s,n,o)});return h}}class r extends e{constructor(t,e,i){super(t,i),this.copiedElement=null,this.temporaryCopy=null,this.isLoad=!1,this.element=e,this.element.classList.add("stf__item"),this.element.classList.add("--"+i)}newTemporaryCopy(){return"hard"===this.nowDrawingDensity?this:(null===this.temporaryCopy&&(this.copiedElement=this.element.cloneNode(!0),this.element.parentElement.appendChild(this.copiedElement),this.temporaryCopy=new r(this.render,this.copiedElement,this.nowDrawingDensity)),this.getTemporaryCopy())}getTemporaryCopy(){return this.temporaryCopy}hideTemporaryCopy(){null!==this.temporaryCopy&&(this.copiedElement.remove(),this.copiedElement=null,this.temporaryCopy=null)}draw(t){const e=t||this.nowDrawingDensity,i=this.render.convertToGlobal(this.state.position),s=this.render.getRect().pageWidth,n=this.render.getRect().height;this.element.classList.remove("--simple");const h=`\n            display: block;\n            z-index: ${this.element.style.zIndex};\n            left: 0;\n            top: 0;\n            width: ${s}px;\n            height: ${n}px;\n        `;"hard"===e?this.drawHard(h):this.drawSoft(i,h)}drawHard(t=""){const e=this.render.getRect().left+this.render.getRect().width/2,i=this.state.hardDrawingAngle,s=t+"\n                backface-visibility: hidden;\n                -webkit-backface-visibility: hidden;\n                clip-path: none;\n                -webkit-clip-path: none;\n            "+(0===this.orientation?`transform-origin: ${this.render.getRect().pageWidth}px 0; \n                   transform: translate3d(0, 0, 0) rotateY(${i}deg);`:`transform-origin: 0 0; \n                   transform: translate3d(${e}px, 0, 0) rotateY(${i}deg);`);this.element.style.cssText=s}drawSoft(t,e=""){let i="polygon( ";for(const t of this.state.area)if(null!==t){let e=1===this.render.getDirection()?{x:-t.x+this.state.position.x,y:t.y-this.state.position.y}:{x:t.x-this.state.position.x,y:t.y-this.state.position.y};e=h.GetRotatedPoint(e,{x:0,y:0},this.state.angle),i+=e.x+"px "+e.y+"px, "}i=i.slice(0,-2),i+=")";const s=e+`transform-origin: 0 0; clip-path: ${i}; -webkit-clip-path: ${i};`+(this.render.isSafari()&&0===this.state.angle?`transform: translate(${t.x}px, ${t.y}px);`:`transform: translate3d(${t.x}px, ${t.y}px, 0) rotate(${this.state.angle}rad);`);this.element.style.cssText=s}simpleDraw(t){const e=this.render.getRect(),i=e.pageWidth,s=e.height,n=1===t?e.left+e.pageWidth:e.left,h=e.top;this.element.classList.add("--simple"),this.element.style.cssText=`\n            position: absolute; \n            display: block; \n            height: ${s}px; \n            left: ${n}px; \n            top: ${h}px; \n            width: ${i}px; \n            z-index: ${this.render.getSettings().startZIndex+1};`}getElement(){return this.element}load(){this.isLoad=!0}setOrientation(t){super.setOrientation(t),this.element.classList.remove("--left","--right"),this.element.classList.add(1===t?"--right":"--left")}setDrawingDensity(t){this.element.classList.remove("--soft","--hard"),this.element.classList.add("--"+t),super.setDrawingDensity(t)}}class o extends s{constructor(t,e,i,s){super(t,e),this.element=i,this.pagesElement=s}load(){for(const t of this.pagesElement){const e=new r(this.render,t,"hard"===t.dataset.density?"hard":"soft");e.load(),this.pages.push(e)}this.createSpread()}}class a{constructor(t,e,i,s){this.direction=t,this.corner=e,this.topIntersectPoint=null,this.sideIntersectPoint=null,this.bottomIntersectPoint=null,this.pageWidth=parseInt(i,10),this.pageHeight=parseInt(s,10)}calc(t){try{return this.position=this.calcAngleAndPosition(t),this.calculateIntersectPoint(this.position),!0}catch(t){return!1}}getFlippingClipArea(){const t=[];let e=!1;return t.push(this.rect.topLeft),t.push(this.topIntersectPoint),null===this.sideIntersectPoint?e=!0:(t.push(this.sideIntersectPoint),null===this.bottomIntersectPoint&&(e=!1)),t.push(this.bottomIntersectPoint),(e||"bottom"===this.corner)&&t.push(this.rect.bottomLeft),t}getBottomClipArea(){const t=[];return t.push(this.topIntersectPoint),"top"===this.corner?t.push({x:this.pageWidth,y:0}):(null!==this.topIntersectPoint&&t.push({x:this.pageWidth,y:0}),t.push({x:this.pageWidth,y:this.pageHeight})),null!==this.sideIntersectPoint?h.GetDistanceBetweenTwoPoint(this.sideIntersectPoint,this.topIntersectPoint)>=10&&t.push(this.sideIntersectPoint):"top"===this.corner&&t.push({x:this.pageWidth,y:this.pageHeight}),t.push(this.bottomIntersectPoint),t.push(this.topIntersectPoint),t}getAngle(){return 0===this.direction?-this.angle:this.angle}getRect(){return this.rect}getPosition(){return this.position}getActiveCorner(){return 0===this.direction?this.rect.topLeft:this.rect.topRight}getDirection(){return this.direction}getFlippingProgress(){return Math.abs((this.position.x-this.pageWidth)/(2*this.pageWidth)*100)}getCorner(){return this.corner}getBottomPagePosition(){return 1===this.direction?{x:this.pageWidth,y:0}:{x:0,y:0}}getShadowStartPoint(){return"top"===this.corner?this.topIntersectPoint:null!==this.sideIntersectPoint?this.sideIntersectPoint:this.topIntersectPoint}getShadowAngle(){const t=h.GetAngleBetweenTwoLine(this.getSegmentToShadowLine(),[{x:0,y:0},{x:this.pageWidth,y:0}]);return 0===this.direction?t:Math.PI-t}calcAngleAndPosition(t){let e=t;if(this.updateAngleAndGeometry(e),e="top"===this.corner?this.checkPositionAtCenterLine(e,{x:0,y:0},{x:0,y:this.pageHeight}):this.checkPositionAtCenterLine(e,{x:0,y:this.pageHeight},{x:0,y:0}),Math.abs(e.x-this.pageWidth)<1&&Math.abs(e.y)<1)throw new Error("Point is too small");return e}updateAngleAndGeometry(t){this.angle=this.calculateAngle(t),this.rect=this.getPageRect(t)}calculateAngle(t){const e=this.pageWidth-t.x+1,i="bottom"===this.corner?this.pageHeight-t.y:t.y;let s=2*Math.acos(e/Math.sqrt(i*i+e*e));i<0&&(s=-s);const n=Math.PI-s;if(!isFinite(s)||n>=0&&n<.003)throw new Error("The G point is too small");return"bottom"===this.corner&&(s=-s),s}getPageRect(t){return"top"===this.corner?this.getRectFromBasePoint([{x:0,y:0},{x:this.pageWidth,y:0},{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}],t):this.getRectFromBasePoint([{x:0,y:-this.pageHeight},{x:this.pageWidth,y:-this.pageHeight},{x:0,y:0},{x:this.pageWidth,y:0}],t)}getRectFromBasePoint(t,e){return{topLeft:this.getRotatedPoint(t[0],e),topRight:this.getRotatedPoint(t[1],e),bottomLeft:this.getRotatedPoint(t[2],e),bottomRight:this.getRotatedPoint(t[3],e)}}getRotatedPoint(t,e){return{x:t.x*Math.cos(this.angle)+t.y*Math.sin(this.angle)+e.x,y:t.y*Math.cos(this.angle)-t.x*Math.sin(this.angle)+e.y}}calculateIntersectPoint(t){const e={left:-1,top:-1,width:this.pageWidth+2,height:this.pageHeight+2};"top"===this.corner?(this.topIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.topRight],[{x:0,y:0},{x:this.pageWidth,y:0}]),this.sideIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.bottomLeft],[{x:this.pageWidth,y:0},{x:this.pageWidth,y:this.pageHeight}]),this.bottomIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.bottomLeft,this.rect.bottomRight],[{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}])):(this.topIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.topLeft,this.rect.topRight],[{x:0,y:0},{x:this.pageWidth,y:0}]),this.sideIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.topLeft],[{x:this.pageWidth,y:0},{x:this.pageWidth,y:this.pageHeight}]),this.bottomIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.bottomLeft,this.rect.bottomRight],[{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}]))}checkPositionAtCenterLine(t,e,i){let s=t;const n=h.LimitPointToCircle(e,this.pageWidth,s);s!==n&&(s=n,this.updateAngleAndGeometry(s));const r=Math.sqrt(Math.pow(this.pageWidth,2)+Math.pow(this.pageHeight,2));let o=this.rect.bottomRight,a=this.rect.topLeft;if("bottom"===this.corner&&(o=this.rect.topRight,a=this.rect.bottomLeft),o.x<=0){const t=h.LimitPointToCircle(i,r,a);t!==s&&(s=t,this.updateAngleAndGeometry(s))}return s}getSegmentToShadowLine(){const t=this.getShadowStartPoint();return[t,t!==this.sideIntersectPoint&&null!==this.sideIntersectPoint?this.sideIntersectPoint:this.bottomIntersectPoint]}}class g{constructor(t,e){this.flippingPage=null,this.bottomPage=null,this.calc=null,this.state="read",this.render=t,this.app=e}fold(t){this.setState("user_fold"),null===this.calc&&this.start(t),this.do(this.render.convertToPage(t))}flip(t){if(this.app.getSettings().disableFlipByClick&&!this.isPointOnCorners(t))return;if(null!==this.calc&&this.render.finishAnimation(),!this.start(t))return;const e=this.getBoundsRect();this.setState("flipping");const i=e.height/10,s="bottom"===this.calc.getCorner()?e.height-i:i,n="bottom"===this.calc.getCorner()?e.height:0;this.calc.calc({x:e.pageWidth-i,y:s}),this.animateFlippingTo({x:e.pageWidth-i,y:s},{x:-e.pageWidth,y:n},!0)}start(t){this.reset();const e=this.render.convertToBook(t),i=this.getBoundsRect(),s=this.getDirectionByPoint(e),n=e.y>=i.height/2?"bottom":"top";if(!this.checkDirection(s))return!1;try{if(this.flippingPage=this.app.getPageCollection().getFlippingPage(s),this.bottomPage=this.app.getPageCollection().getBottomPage(s),"landscape"===this.render.getOrientation())if(1===s){const t=this.app.getPageCollection().nextBy(this.flippingPage);null!==t&&this.flippingPage.getDensity()!==t.getDensity()&&(this.flippingPage.setDrawingDensity("hard"),t.setDrawingDensity("hard"))}else{const t=this.app.getPageCollection().prevBy(this.flippingPage);null!==t&&this.flippingPage.getDensity()!==t.getDensity()&&(this.flippingPage.setDrawingDensity("hard"),t.setDrawingDensity("hard"))}return this.render.setDirection(s),this.calc=new a(s,n,i.pageWidth.toString(10),i.height.toString(10)),!0}catch(t){return!1}}do(t){if(null!==this.calc&&this.calc.calc(t)){const t=this.calc.getFlippingProgress();this.bottomPage.setArea(this.calc.getBottomClipArea()),this.bottomPage.setPosition(this.calc.getBottomPagePosition()),this.bottomPage.setAngle(0),this.bottomPage.setHardAngle(0),this.flippingPage.setArea(this.calc.getFlippingClipArea()),this.flippingPage.setPosition(this.calc.getActiveCorner()),this.flippingPage.setAngle(this.calc.getAngle()),0===this.calc.getDirection()?this.flippingPage.setHardAngle(90*(200-2*t)/100):this.flippingPage.setHardAngle(-90*(200-2*t)/100),this.render.setPageRect(this.calc.getRect()),this.render.setBottomPage(this.bottomPage),this.render.setFlippingPage(this.flippingPage),this.render.setShadowData(this.calc.getShadowStartPoint(),this.calc.getShadowAngle(),t,this.calc.getDirection())}}flipToPage(t,e){const i=this.app.getPageCollection().getCurrentSpreadIndex(),s=this.app.getPageCollection().getSpreadIndexByPage(t);try{s>i&&(this.app.getPageCollection().setCurrentSpreadIndex(s-1),this.flipNext(e)),s<i&&(this.app.getPageCollection().setCurrentSpreadIndex(s+1),this.flipPrev(e))}catch(t){}}flipNext(t){this.flip({x:this.render.getRect().left+2*this.render.getRect().pageWidth-10,y:"top"===t?1:this.render.getRect().height-2})}flipPrev(t){this.flip({x:10,y:"top"===t?1:this.render.getRect().height-2})}stopMove(){if(null===this.calc)return;const t=this.calc.getPosition(),e=this.getBoundsRect(),i="bottom"===this.calc.getCorner()?e.height:0;t.x<=0?this.animateFlippingTo(t,{x:-e.pageWidth,y:i},!0):this.animateFlippingTo(t,{x:e.pageWidth,y:i},!1)}showCorner(t){if(!this.checkState("read","fold_corner"))return;const e=this.getBoundsRect(),i=e.pageWidth;if(this.isPointOnCorners(t))if(null===this.calc){if(!this.start(t))return;this.setState("fold_corner"),this.calc.calc({x:i-1,y:1});const s=50,n="bottom"===this.calc.getCorner()?e.height-1:1,h="bottom"===this.calc.getCorner()?e.height-s:s;this.animateFlippingTo({x:i-1,y:n},{x:i-s,y:h},!1,!1)}else this.do(this.render.convertToPage(t));else this.setState("read"),this.render.finishAnimation(),this.stopMove()}animateFlippingTo(t,e,i,s=!0){const n=h.GetCordsFromTwoPoint(t,e),r=[];for(const t of n)r.push(()=>this.do(t));const o=this.getAnimationDuration(n.length);this.render.startAnimation(r,o,()=>{this.calc&&(i&&(1===this.calc.getDirection()?this.app.turnToPrevPage():this.app.turnToNextPage()),s&&(this.render.setBottomPage(null),this.render.setFlippingPage(null),this.render.clearShadow(),this.setState("read"),this.reset()))})}getCalculation(){return this.calc}getState(){return this.state}setState(t){this.state!==t&&(this.app.updateState(t),this.state=t)}getDirectionByPoint(t){const e=this.getBoundsRect();if("portrait"===this.render.getOrientation()){if(t.x-e.pageWidth<=e.width/5)return 1}else if(t.x<e.width/2)return 1;return 0}getAnimationDuration(t){const e=this.app.getSettings().flippingTime;return t>=1e3?e:t/1e3*e}checkDirection(t){return 0===t?this.app.getCurrentPageIndex()<this.app.getPageCount()-1:this.app.getCurrentPageIndex()>=1}reset(){this.calc=null,this.flippingPage=null,this.bottomPage=null}getBoundsRect(){return this.render.getRect()}checkState(...t){for(const e of t)if(this.state===e)return!0;return!1}isPointOnCorners(t){const e=this.getBoundsRect(),i=e.pageWidth,s=Math.sqrt(Math.pow(i,2)+Math.pow(e.height,2))/5,n=this.render.convertToBook(t);return n.x>0&&n.y>0&&n.x<e.width&&n.y<e.height&&(n.x<s||n.x>e.width-s)&&(n.y<s||n.y>e.height-s)}}class l{constructor(t,e){this.leftPage=null,this.rightPage=null,this.flippingPage=null,this.bottomPage=null,this.direction=null,this.orientation=null,this.shadow=null,this.animation=null,this.pageRect=null,this.boundsRect=null,this.timer=0,this.safari=!1,this.setting=e,this.app=t;const i=new RegExp("Version\\/[\\d\\.]+.*Safari/");this.safari=null!==i.exec(window.navigator.userAgent)}render(t){if(null!==this.animation){const e=Math.round((t-this.animation.startedAt)/this.animation.durationFrame);e<this.animation.frames.length?this.animation.frames[e]():(this.animation.onAnimateEnd(),this.animation=null)}this.timer=t,this.drawFrame()}start(){this.update();const t=e=>{this.render(e),requestAnimationFrame(t)};requestAnimationFrame(t)}startAnimation(t,e,i){this.finishAnimation(),this.animation={frames:t,duration:e,durationFrame:e/t.length,onAnimateEnd:i,startedAt:this.timer}}finishAnimation(){null!==this.animation&&(this.animation.frames[this.animation.frames.length-1](),null!==this.animation.onAnimateEnd&&this.animation.onAnimateEnd()),this.animation=null}update(){this.boundsRect=null;const t=this.calculateBoundsRect();this.orientation!==t&&(this.orientation=t,this.app.updateOrientation(t))}calculateBoundsRect(){let t="landscape";const e=this.getBlockWidth(),i=e/2,s=this.getBlockHeight()/2,n=this.setting.width/this.setting.height;let h=this.setting.width,r=this.setting.height,o=i-h;return"stretch"===this.setting.size?(e<2*this.setting.minWidth&&this.app.getSettings().usePortrait&&(t="portrait"),h="portrait"===t?this.getBlockWidth():this.getBlockWidth()/2,h>this.setting.maxWidth&&(h=this.setting.maxWidth),r=h/n,r>this.getBlockHeight()&&(r=this.getBlockHeight(),h=r*n),o="portrait"===t?i-h/2-h:i-h):e<2*h&&this.app.getSettings().usePortrait&&(t="portrait",o=i-h/2-h),this.boundsRect={left:o,top:s-r/2,width:2*h,height:r,pageWidth:h},t}setShadowData(t,e,i,s){if(!this.app.getSettings().drawShadow)return;const n=100*this.getSettings().maxShadowOpacity;this.shadow={pos:t,angle:e,width:3*this.getRect().pageWidth/4*i/100,opacity:(100-i)*n/100/100,direction:s,progress:2*i}}clearShadow(){this.shadow=null}getBlockWidth(){return this.app.getUI().getDistElement().offsetWidth}getBlockHeight(){return this.app.getUI().getDistElement().offsetHeight}getDirection(){return this.direction}getRect(){return null===this.boundsRect&&this.calculateBoundsRect(),this.boundsRect}getSettings(){return this.app.getSettings()}getOrientation(){return this.orientation}setPageRect(t){this.pageRect=t}setDirection(t){this.direction=t}setRightPage(t){null!==t&&t.setOrientation(1),this.rightPage=t}setLeftPage(t){null!==t&&t.setOrientation(0),this.leftPage=t}setBottomPage(t){null!==t&&t.setOrientation(1===this.direction?0:1),this.bottomPage=t}setFlippingPage(t){null!==t&&t.setOrientation(0===this.direction&&"portrait"!==this.orientation?0:1),this.flippingPage=t}convertToBook(t){const e=this.getRect();return{x:t.x-e.left,y:t.y-e.top}}isSafari(){return this.safari}convertToPage(t,e){e||(e=this.direction);const i=this.getRect();return{x:0===e?t.x-i.left-i.width/2:i.width/2-t.x+i.left,y:t.y-i.top}}convertToGlobal(t,e){if(e||(e=this.direction),null==t)return null;const i=this.getRect();return{x:0===e?t.x+i.left+i.width/2:i.width/2-t.x+i.left,y:t.y+i.top}}convertRectToGlobal(t,e){return e||(e=this.direction),{topLeft:this.convertToGlobal(t.topLeft,e),topRight:this.convertToGlobal(t.topRight,e),bottomLeft:this.convertToGlobal(t.bottomLeft,e),bottomRight:this.convertToGlobal(t.bottomRight,e)}}}class d extends l{constructor(t,e,i){super(t,e),this.canvas=i,this.ctx=i.getContext("2d")}getContext(){return this.ctx}reload(){}drawFrame(){this.clear(),"portrait"!==this.orientation&&null!=this.leftPage&&this.leftPage.simpleDraw(0),null!=this.rightPage&&this.rightPage.simpleDraw(1),null!=this.bottomPage&&this.bottomPage.draw(),this.drawBookShadow(),null!=this.flippingPage&&this.flippingPage.draw(),null!=this.shadow&&(this.drawOuterShadow(),this.drawInnerShadow());const t=this.getRect();"portrait"===this.orientation&&(this.ctx.beginPath(),this.ctx.rect(t.left+t.pageWidth,t.top,t.width,t.height),this.ctx.clip())}drawBookShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath();const e=t.width/20;this.ctx.rect(t.left,t.top,t.width,t.height);const i={x:t.left+t.width/2-e/2,y:0};this.ctx.translate(i.x,i.y);const s=this.ctx.createLinearGradient(0,0,e,0);s.addColorStop(0,"rgba(0, 0, 0, 0)"),s.addColorStop(.4,"rgba(0, 0, 0, 0.2)"),s.addColorStop(.49,"rgba(0, 0, 0, 0.1)"),s.addColorStop(.5,"rgba(0, 0, 0, 0.5)"),s.addColorStop(.51,"rgba(0, 0, 0, 0.4)"),s.addColorStop(1,"rgba(0, 0, 0, 0)"),this.ctx.clip(),this.ctx.fillStyle=s,this.ctx.fillRect(0,0,e,2*t.height),this.ctx.restore()}drawOuterShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath(),this.ctx.rect(t.left,t.top,t.width,t.height);const e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y});this.ctx.translate(e.x,e.y),this.ctx.rotate(Math.PI+this.shadow.angle+Math.PI/2);const i=this.ctx.createLinearGradient(0,0,this.shadow.width,0);0===this.shadow.direction?(this.ctx.translate(0,-100),i.addColorStop(0,"rgba(0, 0, 0, "+this.shadow.opacity+")"),i.addColorStop(1,"rgba(0, 0, 0, 0)")):(this.ctx.translate(-this.shadow.width,-100),i.addColorStop(0,"rgba(0, 0, 0, 0)"),i.addColorStop(1,"rgba(0, 0, 0, "+this.shadow.opacity+")")),this.ctx.clip(),this.ctx.fillStyle=i,this.ctx.fillRect(0,0,this.shadow.width,2*t.height),this.ctx.restore()}drawInnerShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath();const e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y}),i=this.convertRectToGlobal(this.pageRect);this.ctx.moveTo(i.topLeft.x,i.topLeft.y),this.ctx.lineTo(i.topRight.x,i.topRight.y),this.ctx.lineTo(i.bottomRight.x,i.bottomRight.y),this.ctx.lineTo(i.bottomLeft.x,i.bottomLeft.y),this.ctx.translate(e.x,e.y),this.ctx.rotate(Math.PI+this.shadow.angle+Math.PI/2);const s=3*this.shadow.width/4,n=this.ctx.createLinearGradient(0,0,s,0);0===this.shadow.direction?(this.ctx.translate(-s,-100),n.addColorStop(1,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(.9,"rgba(0, 0, 0, 0.05)"),n.addColorStop(.7,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(0,"rgba(0, 0, 0, 0)")):(this.ctx.translate(0,-100),n.addColorStop(0,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(.1,"rgba(0, 0, 0, 0.05)"),n.addColorStop(.3,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(1,"rgba(0, 0, 0, 0)")),this.ctx.clip(),this.ctx.fillStyle=n,this.ctx.fillRect(0,0,s,2*t.height),this.ctx.restore()}clear(){this.ctx.fillStyle="white",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height)}}class p{constructor(t,e,i){this.touchPoint=null,this.swipeTimeout=250,this.onResize=()=>{this.update()},this.onMouseDown=t=>{if(this.checkTarget(t.target)){const e=this.getMousePos(t.clientX,t.clientY);this.app.startUserTouch(e),t.preventDefault()}},this.onTouchStart=t=>{if(this.checkTarget(t.target)&&t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);this.touchPoint={point:i,time:Date.now()},setTimeout(()=>{null!==this.touchPoint&&this.app.startUserTouch(i)},this.swipeTimeout),this.app.getSettings().mobileScrollSupport||t.preventDefault()}},this.onMouseUp=t=>{const e=this.getMousePos(t.clientX,t.clientY);this.app.userStop(e)},this.onMouseMove=t=>{const e=this.getMousePos(t.clientX,t.clientY);this.app.userMove(e,!1)},this.onTouchMove=t=>{if(t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);this.app.getSettings().mobileScrollSupport?(null!==this.touchPoint&&(Math.abs(this.touchPoint.point.x-i.x)>10||"read"!==this.app.getState())&&t.cancelable&&this.app.userMove(i,!0),"read"!==this.app.getState()&&t.preventDefault()):this.app.userMove(i,!0)}},this.onTouchEnd=t=>{if(t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);let s=!1;if(null!==this.touchPoint){const t=i.x-this.touchPoint.point.x,e=Math.abs(i.y-this.touchPoint.point.y);Math.abs(t)>this.swipeDistance&&e<2*this.swipeDistance&&Date.now()-this.touchPoint.time<this.swipeTimeout&&(t>0?this.app.flipPrev(this.touchPoint.point.y<this.app.getRender().getRect().height/2?"top":"bottom"):this.app.flipNext(this.touchPoint.point.y<this.app.getRender().getRect().height/2?"top":"bottom"),s=!0),this.touchPoint=null}this.app.userStop(i,s)}},this.parentElement=t,t.classList.add("stf__parent"),t.insertAdjacentHTML("afterbegin",'<div class="stf__wrapper"></div>'),this.wrapper=t.querySelector(".stf__wrapper"),this.app=e;const s=this.app.getSettings().usePortrait?1:2;t.style.minWidth=i.minWidth*s+"px",t.style.minHeight=i.minHeight+"px","fixed"===i.size&&(t.style.minWidth=i.width*s+"px",t.style.minHeight=i.height+"px"),i.autoSize&&(t.style.width="100%",t.style.maxWidth=2*i.maxWidth+"px"),t.style.display="block",window.addEventListener("resize",this.onResize,!1),this.swipeDistance=i.swipeDistance}destroy(){this.app.getSettings().useMouseEvents&&this.removeHandlers(),this.distElement.remove(),this.wrapper.remove()}getDistElement(){return this.distElement}getWrapper(){return this.wrapper}setOrientationStyle(t){this.wrapper.classList.remove("--portrait","--landscape"),"portrait"===t?(this.app.getSettings().autoSize&&(this.wrapper.style.paddingBottom=this.app.getSettings().height/this.app.getSettings().width*100+"%"),this.wrapper.classList.add("--portrait")):(this.app.getSettings().autoSize&&(this.wrapper.style.paddingBottom=this.app.getSettings().height/(2*this.app.getSettings().width)*100+"%"),this.wrapper.classList.add("--landscape")),this.update()}removeHandlers(){window.removeEventListener("resize",this.onResize),this.distElement.removeEventListener("mousedown",this.onMouseDown),this.distElement.removeEventListener("touchstart",this.onTouchStart),window.removeEventListener("mousemove",this.onMouseMove),window.removeEventListener("touchmove",this.onTouchMove),window.removeEventListener("mouseup",this.onMouseUp),window.removeEventListener("touchend",this.onTouchEnd)}setHandlers(){window.addEventListener("resize",this.onResize,!1),this.app.getSettings().useMouseEvents&&(this.distElement.addEventListener("mousedown",this.onMouseDown),this.distElement.addEventListener("touchstart",this.onTouchStart),window.addEventListener("mousemove",this.onMouseMove),window.addEventListener("touchmove",this.onTouchMove,{passive:!this.app.getSettings().mobileScrollSupport}),window.addEventListener("mouseup",this.onMouseUp),window.addEventListener("touchend",this.onTouchEnd))}getMousePos(t,e){const i=this.distElement.getBoundingClientRect();return{x:t-i.left,y:e-i.top}}checkTarget(t){return!this.app.getSettings().clickEventForward||!["a","button"].includes(t.tagName.toLowerCase())}}class c extends p{constructor(t,e,i,s){super(t,e,i),this.wrapper.insertAdjacentHTML("afterbegin",'<div class="stf__block"></div>'),this.distElement=t.querySelector(".stf__block"),this.items=s;for(const t of s)this.distElement.appendChild(t);this.setHandlers()}clear(){for(const t of this.items)this.parentElement.appendChild(t)}updateItems(t){this.removeHandlers(),this.distElement.innerHTML="";for(const e of t)this.distElement.appendChild(e);this.items=t,this.setHandlers()}update(){this.app.getRender().update()}}class u extends p{constructor(t,e,i){super(t,e,i),this.wrapper.innerHTML='<canvas class="stf__canvas"></canvas>',this.canvas=t.querySelectorAll("canvas")[0],this.distElement=this.canvas,this.resizeCanvas(),this.setHandlers()}resizeCanvas(){const t=getComputedStyle(this.canvas),e=parseInt(t.getPropertyValue("width"),10),i=parseInt(t.getPropertyValue("height"),10);this.canvas.width=e,this.canvas.height=i}getCanvas(){return this.canvas}update(){this.resizeCanvas(),this.app.getRender().update()}}class w extends l{constructor(t,e,i){super(t,e),this.outerShadow=null,this.innerShadow=null,this.hardShadow=null,this.hardInnerShadow=null,this.element=i,this.createShadows()}createShadows(){this.element.insertAdjacentHTML("beforeend",'<div class="stf__outerShadow"></div>\n             <div class="stf__innerShadow"></div>\n             <div class="stf__hardShadow"></div>\n             <div class="stf__hardInnerShadow"></div>'),this.outerShadow=this.element.querySelector(".stf__outerShadow"),this.innerShadow=this.element.querySelector(".stf__innerShadow"),this.hardShadow=this.element.querySelector(".stf__hardShadow"),this.hardInnerShadow=this.element.querySelector(".stf__hardInnerShadow")}clearShadow(){super.clearShadow(),this.outerShadow.style.cssText="display: none",this.innerShadow.style.cssText="display: none",this.hardShadow.style.cssText="display: none",this.hardInnerShadow.style.cssText="display: none"}reload(){this.element.querySelector(".stf__outerShadow")||this.createShadows()}drawHardInnerShadow(){const t=this.getRect(),e=this.shadow.progress>100?200-this.shadow.progress:this.shadow.progress;let i=(100-e)*(2.5*t.pageWidth)/100+20;i>t.pageWidth&&(i=t.pageWidth);let s=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+5).toString(10)};\n            width: ${i}px;\n            height: ${t.height}px;\n            background: linear-gradient(to right,\n                rgba(0, 0, 0, ${this.shadow.opacity*e/100}) 5%,\n                rgba(0, 0, 0, 0) 100%);\n            left: ${t.left+t.width/2}px;\n            transform-origin: 0 0;\n        `;s+=0===this.getDirection()&&this.shadow.progress>100||1===this.getDirection()&&this.shadow.progress<=100?"transform: translate3d(0, 0, 0);":"transform: translate3d(0, 0, 0) rotateY(180deg);",this.hardInnerShadow.style.cssText=s}drawHardOuterShadow(){const t=this.getRect();let e=(100-(this.shadow.progress>100?200-this.shadow.progress:this.shadow.progress))*(2.5*t.pageWidth)/100+20;e>t.pageWidth&&(e=t.pageWidth);let i=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+4).toString(10)};\n            width: ${e}px;\n            height: ${t.height}px;\n            background: linear-gradient(to left, rgba(0, 0, 0, ${this.shadow.opacity}) 5%, rgba(0, 0, 0, 0) 100%);\n            left: ${t.left+t.width/2}px;\n            transform-origin: 0 0;\n        `;i+=0===this.getDirection()&&this.shadow.progress>100||1===this.getDirection()&&this.shadow.progress<=100?"transform: translate3d(0, 0, 0) rotateY(180deg);":"transform: translate3d(0, 0, 0);",this.hardShadow.style.cssText=i}drawInnerShadow(){const t=this.getRect(),e=3*this.shadow.width/4,i=0===this.getDirection()?e:0,s=0===this.getDirection()?"to left":"to right",n=this.convertToGlobal(this.shadow.pos),r=this.shadow.angle+3*Math.PI/2,o=[this.pageRect.topLeft,this.pageRect.topRight,this.pageRect.bottomRight,this.pageRect.bottomLeft];let a="polygon( ";for(const t of o){let e=1===this.getDirection()?{x:-t.x+this.shadow.pos.x,y:t.y-this.shadow.pos.y}:{x:t.x-this.shadow.pos.x,y:t.y-this.shadow.pos.y};e=h.GetRotatedPoint(e,{x:i,y:100},r),a+=e.x+"px "+e.y+"px, "}a=a.slice(0,-2),a+=")";const g=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+10).toString(10)};\n            width: ${e}px;\n            height: ${2*t.height}px;\n            background: linear-gradient(${s},\n                rgba(0, 0, 0, ${this.shadow.opacity}) 5%,\n                rgba(0, 0, 0, 0.05) 15%,\n                rgba(0, 0, 0, ${this.shadow.opacity}) 35%,\n                rgba(0, 0, 0, 0) 100%);\n            transform-origin: ${i}px 100px;\n            transform: translate3d(${n.x-i}px, ${n.y-100}px, 0) rotate(${r}rad);\n            clip-path: ${a};\n            -webkit-clip-path: ${a};\n        `;this.innerShadow.style.cssText=g}drawOuterShadow(){const t=this.getRect(),e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y}),i=this.shadow.angle+3*Math.PI/2,s=1===this.getDirection()?this.shadow.width:0,n=0===this.getDirection()?"to right":"to left",r=[{x:0,y:0},{x:t.pageWidth,y:0},{x:t.pageWidth,y:t.height},{x:0,y:t.height}];let o="polygon( ";for(const t of r)if(null!==t){let e=1===this.getDirection()?{x:-t.x+this.shadow.pos.x,y:t.y-this.shadow.pos.y}:{x:t.x-this.shadow.pos.x,y:t.y-this.shadow.pos.y};e=h.GetRotatedPoint(e,{x:s,y:100},i),o+=e.x+"px "+e.y+"px, "}o=o.slice(0,-2),o+=")";const a=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+10).toString(10)};\n            width: ${this.shadow.width}px;\n            height: ${2*t.height}px;\n            background: linear-gradient(${n}, rgba(0, 0, 0, ${this.shadow.opacity}), rgba(0, 0, 0, 0));\n            transform-origin: ${s}px 100px;\n            transform: translate3d(${e.x-s}px, ${e.y-100}px, 0) rotate(${i}rad);\n            clip-path: ${o};\n            -webkit-clip-path: ${o};\n        `;this.outerShadow.style.cssText=a}drawLeftPage(){"portrait"!==this.orientation&&null!==this.leftPage&&(1===this.direction&&null!==this.flippingPage&&"hard"===this.flippingPage.getDrawingDensity()?(this.leftPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.leftPage.setHardDrawingAngle(180+this.flippingPage.getHardAngle()),this.leftPage.draw(this.flippingPage.getDrawingDensity())):this.leftPage.simpleDraw(0))}drawRightPage(){null!==this.rightPage&&(0===this.direction&&null!==this.flippingPage&&"hard"===this.flippingPage.getDrawingDensity()?(this.rightPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.rightPage.setHardDrawingAngle(180+this.flippingPage.getHardAngle()),this.rightPage.draw(this.flippingPage.getDrawingDensity())):this.rightPage.simpleDraw(1))}drawBottomPage(){if(null===this.bottomPage)return;const t=null!=this.flippingPage?this.flippingPage.getDrawingDensity():null;"portrait"===this.orientation&&1===this.direction||(this.bottomPage.getElement().style.zIndex=(this.getSettings().startZIndex+3).toString(10),this.bottomPage.draw(t))}drawFrame(){this.clear(),this.drawLeftPage(),this.drawRightPage(),this.drawBottomPage(),null!=this.flippingPage&&(this.flippingPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.flippingPage.draw()),null!=this.shadow&&null!==this.flippingPage&&("soft"===this.flippingPage.getDrawingDensity()?(this.drawOuterShadow(),this.drawInnerShadow()):(this.drawHardOuterShadow(),this.drawHardInnerShadow()))}clear(){for(const t of this.app.getPageCollection().getPages())t!==this.leftPage&&t!==this.rightPage&&t!==this.flippingPage&&t!==this.bottomPage&&(t.getElement().style.cssText="display: none"),t.getTemporaryCopy()!==this.flippingPage&&t.hideTemporaryCopy()}update(){super.update(),null!==this.rightPage&&this.rightPage.setOrientation(1),null!==this.leftPage&&this.leftPage.setOrientation(0)}}class x{constructor(){this._default={startPage:0,size:"fixed",width:0,height:0,minWidth:0,maxWidth:0,minHeight:0,maxHeight:0,drawShadow:!0,flippingTime:1e3,usePortrait:!0,startZIndex:0,autoSize:!0,maxShadowOpacity:1,showCover:!1,mobileScrollSupport:!0,swipeDistance:30,clickEventForward:!0,useMouseEvents:!0,showPageCorners:!0,disableFlipByClick:!1}}getSettings(t){const e=this._default;if(Object.assign(e,t),"stretch"!==e.size&&"fixed"!==e.size)throw new Error('Invalid size type. Available only "fixed" and "stretch" value');if(e.width<=0||e.height<=0)throw new Error("Invalid width or height");if(e.flippingTime<=0)throw new Error("Invalid flipping time");return"stretch"===e.size?(e.minWidth<=0&&(e.minWidth=100),e.maxWidth<e.minWidth&&(e.maxWidth=2e3),e.minHeight<=0&&(e.minHeight=100),e.maxHeight<e.minHeight&&(e.maxHeight=2e3)):(e.minWidth=e.width,e.maxWidth=e.width,e.minHeight=e.height,e.maxHeight=e.height),e}}!function(t,e){void 0===e&&(e={});var i=e.insertAt;if(t&&"undefined"!=typeof document){var s=document.head||document.getElementsByTagName("head")[0],n=document.createElement("style");n.type="text/css","top"===i&&s.firstChild?s.insertBefore(n,s.firstChild):s.appendChild(n),n.styleSheet?n.styleSheet.cssText=t:n.appendChild(document.createTextNode(t))}}(".stf__parent {\n  position: relative;\n  display: block;\n  box-sizing: border-box;\n  transform: translateZ(0);\n\n  -ms-touch-action: pan-y;\n  touch-action: pan-y;\n}\n\n.sft__wrapper {\n  position: relative;\n  width: 100%;\n  box-sizing: border-box;\n}\n\n.stf__parent canvas {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n}\n\n.stf__block {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  perspective: 2000px;\n}\n\n.stf__item {\n  display: none;\n  position: absolute;\n  transform-style: preserve-3d;\n}\n\n.stf__outerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__innerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__hardShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__hardInnerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}");t.PageFlip=class extends class{constructor(){this.events=new Map}on(t,e){return this.events.has(t)?this.events.get(t).push(e):this.events.set(t,[e]),this}off(t){this.events.delete(t)}trigger(t,e,i=null){if(this.events.has(t))for(const s of this.events.get(t))s({data:i,object:e})}}{constructor(t,e){super(),this.isUserTouch=!1,this.isUserMove=!1,this.setting=null,this.pages=null,this.setting=(new x).getSettings(e),this.block=t}destroy(){this.ui.destroy(),this.block.remove()}update(){this.render.update(),this.pages.show()}loadFromImages(t){this.ui=new u(this.block,this,this.setting);const e=this.ui.getCanvas();this.render=new d(this,this.setting,e),this.flipController=new g(this.render,this),this.pages=new n(this,this.render,t),this.pages.load(),this.render.start(),this.pages.show(this.setting.startPage),setTimeout(()=>{this.ui.update(),this.trigger("init",this,{page:this.setting.startPage,mode:this.render.getOrientation()})},1)}loadFromHTML(t){this.ui=new c(this.block,this,this.setting,t),this.render=new w(this,this.setting,this.ui.getDistElement()),this.flipController=new g(this.render,this),this.pages=new o(this,this.render,this.ui.getDistElement(),t),this.pages.load(),this.render.start(),this.pages.show(this.setting.startPage),setTimeout(()=>{this.ui.update(),this.trigger("init",this,{page:this.setting.startPage,mode:this.render.getOrientation()})},1)}updateFromImages(t){const e=this.pages.getCurrentPageIndex();this.pages.destroy(),this.pages=new n(this,this.render,t),this.pages.load(),this.pages.show(e),this.trigger("update",this,{page:e,mode:this.render.getOrientation()})}updateFromHtml(t){const e=this.pages.getCurrentPageIndex();this.pages.destroy(),this.pages=new o(this,this.render,this.ui.getDistElement(),t),this.pages.load(),this.ui.updateItems(t),this.render.reload(),this.pages.show(e),this.trigger("update",this,{page:e,mode:this.render.getOrientation()})}clear(){this.pages.destroy(),this.ui.clear()}turnToPrevPage(){this.pages.showPrev()}turnToNextPage(){this.pages.showNext()}turnToPage(t){this.pages.show(t)}flipNext(t="top"){this.flipController.flipNext(t)}flipPrev(t="top"){this.flipController.flipPrev(t)}flip(t,e="top"){this.flipController.flipToPage(t,e)}updateState(t){this.trigger("changeState",this,t)}updatePageIndex(t){this.trigger("flip",this,t)}updateOrientation(t){this.ui.setOrientationStyle(t),this.update(),this.trigger("changeOrientation",this,t)}getPageCount(){return this.pages.getPageCount()}getCurrentPageIndex(){return this.pages.getCurrentPageIndex()}getPage(t){return this.pages.getPage(t)}getRender(){return this.render}getFlipController(){return this.flipController}getOrientation(){return this.render.getOrientation()}getBoundsRect(){return this.render.getRect()}getSettings(){return this.setting}getUI(){return this.ui}getState(){return this.flipController.getState()}getPageCollection(){return this.pages}startUserTouch(t){this.mousePosition=t,this.isUserTouch=!0,this.isUserMove=!1}userMove(t,e){this.isUserTouch||e||!this.setting.showPageCorners?this.isUserTouch&&h.GetDistanceBetweenTwoPoint(this.mousePosition,t)>5&&(this.isUserMove=!0,this.flipController.fold(t)):this.flipController.showCorner(t)}userStop(t,e=!1){this.isUserTouch&&(this.isUserTouch=!1,e||(this.isUserMove?this.flipController.stopMove():this.flipController.flip(t)))}},Object.defineProperty(t,"__esModule",{value:!0})}));
+
 (function(){
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(pointer: fine)').matches;
@@ -1127,8 +1204,11 @@
     {t:'Amerikadanalisveris.com', c:'Logo — E-Ticaret',
      cover:'assets/logolar/07.jpg', g:['assets/logolar/07.jpg'],
      n:'Amerikadanalisveris.com için logotype. Alışveriş etiketini andıran vurgu bloğuyla pratik ve hatırlanır bir e-ticaret kimliği tasarlandı.'},
+    {t:'BRB Group', c:'Logo — Endüstri',
+     cover:'assets/logolar/08.jpg', g:['assets/logolar/08.jpg'],
+     n:'Çelik konstrüksiyon ve raf sistemleri alanında çalışan BRB Group için logo. Çelik profilleri andıran çizgilerden örülen baklava formlu amblem, ortasındaki altın dokunuşla tamamlanıyor; beyaz ve altın logotype koyu zeminde güçlü bir kurumsal duruş veriyor.'},
   ];
-  const GAL_AR={"assets/iksv/":[133,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71],"assets/davinci/":[70,70,70],"assets/gameforce/":[150,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71],"assets/dbfweb/":[140,140,140,140,140],"assets/sendikaweb/":[140,140,140,140,140,140],"assets/pijans/":[133,133,133],"assets/sblogo/":[93,168,186,150],"assets/gflogo/":[133,74],"assets/digital/":[72,71,100,71,100,71,75,85,100],"assets/sbsocial/":[100,100,100,100,100,100,100],"assets/deste/":[71,71,71,71,71,71,71,71,72,72,71,72],"assets/caz/":[71,178,56],"assets/logolar/01.jpg":[133],"assets/logolar/02.jpg":[133],"assets/logolar/03.jpg":[133],"assets/logolar/04.jpg":[104],"assets/logolar/05.jpg":[133],"assets/logolar/06.jpg":[133],"assets/logolar/07.jpg":[133]};
+  const GAL_AR={"assets/iksv/":[133,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71],"assets/davinci/":[70,70,70],"assets/gameforce/":[150,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71,71],"assets/dbfweb/":[140,140,140,140,140],"assets/sendikaweb/":[140,140,140,140,140,140],"assets/pijans/":[133,133,133],"assets/sblogo/":[93,168,186,150],"assets/gflogo/":[133,74],"assets/digital/":[72,71,100,71,100,71,75,85,100],"assets/sbsocial/":[100,100,100,100,100,100,100],"assets/deste/":[71,71,71,71,71,71,71,71,72,72,71,72],"assets/caz/":[71,178,56],"assets/logolar/01.jpg":[133],"assets/logolar/02.jpg":[133],"assets/logolar/03.jpg":[133],"assets/logolar/04.jpg":[104],"assets/logolar/05.jpg":[133],"assets/logolar/06.jpg":[133],"assets/logolar/07.jpg":[133],"assets/logolar/08.jpg":[133]};
   const N=PROJECTS.length;
   const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const foldTR = t => t.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ü/g,'u').replace(/â/g,'a').replace(/î/g,'i');
@@ -1309,7 +1389,9 @@
       if (d){ try{ history.pushState(d,'',BASE_URL+stateHash(d)); histDepth=1; }catch(_){} }
       return;
     }
-    const st=e.state; histMute=true;
+    const st=e.state;
+    if ((!st || !st.ui) && location.hash.length>1){ histDepth=0; return; }   /* adres çubuğuna elle #… yazıldı: hashchange yönlendirir */
+    histMute=true;
     if (!st || !st.ui){
       /* Geri: en üstteki katman kapanır */
       if (zoomOpen){ closeZoom(); }
@@ -1439,16 +1521,19 @@
   let gi=0, gArr=[], imgLock=false, closeTimer=null;
 
   let gInfo={g:[],ars:null,sprite:null};
+  function markThumbs(a,b){
+    gdots.querySelectorAll('.gthumb').forEach((d,i)=>{
+      const on=i>=a&&i<=b; d.classList.toggle('on',on);
+      if (on){ d.setAttribute('aria-current','true'); if (i===a) hscrollTo(gdots, d.offsetLeft-(gdots.clientWidth-d.offsetWidth)/2); }
+      else d.removeAttribute('aria-current');
+    });
+  }
   function setPaperImg(){
     const ar = gInfo.ars && gInfo.ars[gi] ? gInfo.ars[gi]/100 : 0;
     if (ar) dImg.style.setProperty('--ar',ar.toFixed(3)); else dImg.style.removeProperty('--ar');   /* kutu, görsel inmeden doğru boyda dursun */
     dImg.src=gArr[gi]; dImg.alt=PROJECTS[dCur].t+(gArr.length>1?' — görsel '+(gi+1):'');
     dCapN.textContent = gArr.length>1 ? ('Görsel '+(gi+1)+' / '+gArr.length) : 'YEC®';
-    gdots.querySelectorAll('.gthumb').forEach((d,i)=>{
-      const on=i===gi; d.classList.toggle('on',on);
-      if (on){ d.setAttribute('aria-current','true'); hscrollTo(gdots, d.offsetLeft-(gdots.clientWidth-d.offsetWidth)/2); }
-      else d.removeAttribute('aria-current');
-    });
+    markThumbs(gi,gi);
     if (gArr[gi+1]) loadImg(gArr[gi+1]);          /* komşuları önden yükle + çöz */
     if (gi>0 && gArr[gi-1]) loadImg(gArr[gi-1]);
   }
@@ -1477,10 +1562,20 @@
   }
   function goImage(target){
     if (imgLock||navLock||dClosing) return false;
-    if (target<0||target>=gArr.length||target===gi) return false;
+    if (target<0||target>=gArr.length) return false;
+    if (isMag()){                                       /* dergi: kapak fotoğrafından sonrası çevrilen kitap */
+      if (bookOn){
+        if (target===0){ leaveBook(); return true; }
+        if (bookBusy) return false;
+        const sp=bookSpan(); if (target>=sp[0] && target<=sp[1]) return false;
+        book.flip(target-1); return true;
+      }
+      if (target>=1){ enterBook(target-1); return true; }
+    }
+    if (target===gi) return false;
     if (reduced){ gi=target; setPaperImg(); return true; }
-    imgLock=true;
     const dir = target>gi ? 1 : -1;
+    imgLock=true;
     const t0=performance.now(), ready=within(loadImg(gArr[target]),1500);   /* savrulurken yenisi çözülsün */
     paper.classList.remove('fall','fast');
     paper.classList.add(dir===1?'toss-l':'toss-r');   /* üstteki kağıt savrulur */
@@ -1492,6 +1587,113 @@
     }, Math.max(0,380-(performance.now()-t0))); });
     return true;
   }
+  /* ---------- dergi: gerçek sayfa çevirme (StPageFlip) ---------- */
+  const dStage=paper.parentNode, bookWrap=document.getElementById('bookWrap'), bookHost=document.getElementById('bookHost');
+  const bkN=document.getElementById('bkN'), bkTip=document.getElementById('bkTip'), pmProbe=document.getElementById('pmProbe');
+  let book=null, bookOn=false, bookBusy=false, bookLand=false, bookQ=null;
+  const isMagOf=(p,g)=> typeof St!=='undefined' && /^Editoryal — Dergi/.test(p.c) && g.length>3;
+  const isMag=()=> typeof St!=='undefined' && !!PROJECTS[dCur] && /^Editoryal — Dergi/.test(PROJECTS[dCur].c) && gArr.length>3;
+  function bookSpan(){                                   /* ekrandaki sayfaların galeri sırası [ilk, son] */
+    const c=book.getCurrentPageIndex(), n=book.getPageCount();
+    if (!bookLand || c===0 || c>=n-1) return [c+1,c+1];
+    return [c+1,c+2];
+  }
+  function bookLoad(center){                             /* önce yakındaki sayfalar, sonra sırayla kalanlar */
+    const ims=bookHost.querySelectorAll('img[data-src]'); if (!ims.length) return;
+    const all=bookHost.querySelectorAll('.bk-pg img'), order=[];
+    for (let d=0; d<all.length; d++){ if (all[center+d]) order.push(all[center+d]); if (d && all[center-d]) order.push(all[center-d]); }
+    clearTimeout(bookQ);
+    let k=0; (function next(){
+      let burst = k<6 ? 6 : 1;
+      while (burst-- && k<order.length){ const im=order[k++]; const src=im.getAttribute('data-src'); if (src){ im.removeAttribute('data-src'); im.src=src; } }
+      if (k<order.length) bookQ=setTimeout(next,140);
+    })();
+  }
+  function bookSync(){
+    if (!book) return;
+    const sp=bookSpan(), n=book.getPageCount();
+    gi=sp[0];
+    bkN.textContent = sp[0]===sp[1] ? ('Sayfa '+sp[0]+' / '+n) : ('Sayfa '+sp[0]+'–'+sp[1]+' / '+n);
+    markThumbs(sp[0],sp[1]);
+    bookLoad(sp[0]-1);
+  }
+  function bookMeasure(){
+    const ar=(gInfo.ars && gInfo.ars[1] ? gInfo.ars[1] : 71)/100;
+    const availW=Math.max(180,Math.min(dStage.clientWidth, pmProbe.offsetWidth||dStage.clientWidth));
+    const twoCol=matchMedia('(min-width:1080px) and (min-height:600px)').matches;      /* geniş ekranda altta şerit ve iskele var: taşmasın */
+    const H=(pmProbe.offsetHeight||Math.round(innerHeight*.56))+(twoCol?0:34);
+    const pl=Math.min(availW/2,H*ar), pp=Math.min(availW,H*ar);
+    const land = pl>=150 && pl>=pp*.66;
+    return {land:land, w:Math.floor(land?pl*2:pp), ar:ar};
+  }
+  function openBook(pg){
+    closeBook();
+    const m=bookMeasure(), pages=gArr.slice(1), el=document.createElement('div');
+    bookLand=m.land;
+    bookHost.style.width=m.w+'px';
+    bookHost.appendChild(el);
+    pages.forEach(function(src,i){
+      const d=document.createElement('div'); d.className='bk-pg';
+      if (i===0 || i===pages.length-1) d.setAttribute('data-density','hard');
+      const im=new Image(); im.alt=PROJECTS[dCur].t+' — sayfa '+(i+1); im.decoding='async'; im.draggable=false; im.setAttribute('data-src',src);
+      d.appendChild(im); el.appendChild(d);
+    });
+    try{
+      book=new St.PageFlip(el,{width:595,height:Math.round(595/m.ar),size:'stretch',
+        minWidth: m.land ? Math.max(60,Math.floor(m.w/2)-6) : Math.ceil(m.w/2)+4, maxWidth:1400, minHeight:80, maxHeight:2400,
+        startPage:Math.max(0,Math.min(pages.length-1,pg)), showCover:true, usePortrait:true, mobileScrollSupport:true,
+        maxShadowOpacity:.55, drawShadow:true, flippingTime:reduced?1:820, swipeDistance:24, showPageCorners:fine, useMouseEvents:true});
+      book.loadFromHTML(el.querySelectorAll('.bk-pg'));
+      book.on('flip',bookSync);
+      book.on('changeState',function(e){ bookBusy = e.data!=='read'; });
+      book.on('changeOrientation',function(e){ bookLand = e.data==='landscape'; bookSync(); });
+    }catch(err){ book=null; el.remove(); return false; }
+    bookOn=true; bookBusy=false;
+    dStage.classList.add('book-on');
+    bkTip.textContent = fine ? 'Sayfanın köşesinden tutup çevir ya da üstüne tıkla' : 'Sayfayı parmağınla kaydırarak çevir';
+    bookSync();
+    return true;
+  }
+  function closeBook(){
+    clearTimeout(bookQ);
+    if (book){ try{ book.destroy(); }catch(e){} book=null; }
+    bookHost.textContent=''; bookOn=false; bookBusy=false;
+    dStage.classList.remove('book-on');
+  }
+  function enterBook(pg){
+    if (reduced){ if (!openBook(pg)){ gi=pg+1; setPaperImg(); } return; }
+    imgLock=true;
+    const t0=performance.now(), ready=within(loadImg(gArr[pg+1]),1200);
+    paper.classList.remove('fall','fast'); paper.classList.add('toss-l');
+    ready.then(()=>{ setTimeout(()=>{
+      imgLock=false;
+      if (dClosing||!detailOpen) return;
+      paper.classList.remove('toss-l');
+      if (!openBook(pg)){ gi=pg+1; setPaperImg(); dropPaper(true,false); }
+    }, Math.max(0,380-(performance.now()-t0))); });
+  }
+  function leaveBook(){
+    closeBook(); gi=0; setPaperImg(); dropPaper(true,false);
+  }
+  /* bir adım ileri/geri: kitapta sayfa çevirir; sona gelince false döner (çağıran sonraki projeye geçer) */
+  function stepImage(d){
+    if (bookOn && book){
+      if (bookBusy) return true;
+      const sp=bookSpan();
+      if (d>0){ if (sp[1]>=gArr.length-1) return false; book.flipNext(); return true; }
+      if (sp[0]<=1){ leaveBook(); return true; }
+      book.flipPrev(); return true;
+    }
+    const t=gi+d; if (t<0||t>=gArr.length) return false;
+    return goImage(t);
+  }
+  document.getElementById('bkPrev').addEventListener('click',function(){ stepImage(-1); });
+  document.getElementById('bkNext').addEventListener('click',function(){ if (stepImage(1)===false) goProject((dCur+1)%N,1); });
+  document.getElementById('bkZoom').addEventListener('click',function(){ openZoom(); });
+  document.getElementById('dMag').addEventListener('click',function(e){ e.stopPropagation(); goImage(1); });
+  let bookRz=null;
+  addEventListener('resize',function(){ if (!bookOn || (document.activeElement && document.activeElement.tagName==='INPUT')) return; clearTimeout(bookRz); bookRz=setTimeout(function(){ if (bookOn && detailOpen && !bookBusy){ const pg=gi-1; openBook(pg); } },260); });
+
   /* kağıda tıkla → sıradaki görsel */
   paper.addEventListener('click',()=>{
     if (gArr.length>1 && !imgLock && !navLock && !dClosing) goImage((gi+1)%gArr.length);
@@ -1499,9 +1701,11 @@
 
   function fillDetail(k){
     const p=PROJECTS[k];
+    closeBook();
     gInfo=galInfo(p); gArr=gInfo.g;
     gi=0;
     paper.classList.toggle('deste', gArr.length>1);
+    paper.classList.toggle('mag', isMagOf(p,gArr));
     buildDots();
     setPaperImg();
     dCapT.textContent=p.t+' — '+p.c.split(' — ')[0];
@@ -1539,7 +1743,9 @@
     const t0=performance.now(), ready=within(loadImg(galOf(PROJECTS[k])[0]),1500);
     paper.classList.remove('fall','fast');
     paper.classList.add(dir===1?'toss-l':'toss-r');   /* eski kağıt savrulur */
+    if (bookOn) bookWrap.classList.add('away');
     ready.then(()=>{ setTimeout(()=>{
+      bookWrap.classList.remove('away');
       if (dClosing||!detailOpen){ navLock=false; detail.classList.remove('fastswap'); return; }
       dCur=k; fillDetail(k); detail.scrollTop=0;
       detail.querySelectorAll('.d-notes .reveal').forEach(r=>r.classList.remove('swap-out'));
@@ -1572,13 +1778,14 @@
     paper.classList.remove('toss-l','toss-r','fast');
     paper.style.transform=''; paper.style.transition='';
     closeBtn.classList.remove('show');       /* kapat butonu kalmasın */
-    if (instant || reduced){ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); restoreNotes(); return; }
+    if (instant || reduced){ detail.classList.remove('open'); detail.setAttribute('aria-hidden','true'); closeBook(); restoreNotes(); return; }
     dClosing=true;
+    if (bookOn) bookWrap.classList.add('away');
     paper.classList.remove('fall'); paper.classList.add('away');
     setTimeout(scatterNotes, 150);           /* kağıt yazı hizasına inince çarpma başlar */
     closeTimer=setTimeout(()=>{
       detail.classList.remove('open'); detail.setAttribute('aria-hidden','true');
-      paper.classList.remove('away');
+      paper.classList.remove('away'); bookWrap.classList.remove('away'); closeBook();
       restoreNotes(); dClosing=false; closeTimer=null;
     }, 1350);
   }
@@ -1630,8 +1837,8 @@
     if (!detailOpen || e.target.closest && e.target.closest('input,textarea')) return;
     if (e.key==='PageDown' || (e.shiftKey && e.key==='ArrowRight')){ e.preventDefault(); goProject((dCur+1)%N,1); }
     else if (e.key==='PageUp' || (e.shiftKey && e.key==='ArrowLeft')){ e.preventDefault(); goProject((dCur+N-1)%N,-1); }
-    else if (e.key==='ArrowRight'){ (gi<gArr.length-1) ? goImage(gi+1) : goProject((dCur+1)%N,1); }
-    else if (e.key==='ArrowLeft'){ (gi>0) ? goImage(gi-1) : goProject((dCur+N-1)%N,-1); }
+    else if (e.key==='ArrowRight'){ if (zoomOpen) zoomStep(1); else if (stepImage(1)===false) goProject((dCur+1)%N,1); }
+    else if (e.key==='ArrowLeft'){ if (zoomOpen) zoomStep(-1); else if (stepImage(-1)===false) goProject((dCur+N-1)%N,-1); }
   });
 
   document.getElementById('dBack').addEventListener('click',()=>closeDetail());
@@ -1649,13 +1856,29 @@
     const mx=Math.max(0,(zoomImg.offsetWidth*zSc-innerWidth)/2+24), my=Math.max(0,(zoomImg.offsetHeight*zSc-innerHeight)/2+24);
     zTx=Math.max(-mx,Math.min(mx,zTx)); zTy=Math.max(-my,Math.min(my,zTy));
   };
+  let zi=0;
+  function zoomShow(){
+    zSc=1; zTx=0; zTy=0; zApply(false);
+    zoomImg.src=gArr[zi]; zoomImg.alt=PROJECTS[dCur].t+(gArr.length>1?' — görsel '+(zi+1):'');
+    zoomEl.classList.toggle('multi',gArr.length>1);
+    if (gArr[zi+1]) loadImg(gArr[zi+1]);
+  }
+  function zoomStep(d){ const t=zi+d; if (t<0||t>=gArr.length) return; zi=t; zoomShow(); }
   function openZoom(){
     if (!detailOpen || dClosing) return;
-    zSc=1; zTx=0; zTy=0; zApply(false);
-    zoomImg.src=gArr[gi]; zoomImg.alt=dImg.alt;
+    zi=gi; zoomShow();
     zoomEl.classList.add('on'); zoomEl.setAttribute('aria-hidden','false'); zoomOpen=true;
   }
-  function closeZoom(){ zoomEl.classList.remove('on','zoomed'); zoomEl.setAttribute('aria-hidden','true'); zoomOpen=false; }
+  function closeZoom(){
+    zoomEl.classList.remove('on','zoomed'); zoomEl.setAttribute('aria-hidden','true'); zoomOpen=false;
+    if (!detailOpen || dClosing || zi===gi) return;
+    /* büyüteçte gezdiyse arkadaki görünüm de oraya gelsin */
+    if (bookOn && book){ if (zi===0) leaveBook(); else { const sp=bookSpan(); if (zi<sp[0]||zi>sp[1]){ try{ book.turnToPage(zi-1); }catch(e){} bookSync(); } } }
+    else if (isMag() && zi>=1){ if (!openBook(zi-1)){ gi=zi; setPaperImg(); } }
+    else { gi=zi; setPaperImg(); }
+  }
+  document.getElementById('zoomP').addEventListener('click',function(e){ e.stopPropagation(); zoomStep(-1); });
+  document.getElementById('zoomN').addEventListener('click',function(e){ e.stopPropagation(); zoomStep(1); });
   document.getElementById('dZoom').addEventListener('click',function(e){ e.stopPropagation(); openZoom(); });
   document.getElementById('zoomX').addEventListener('click',closeZoom);
   (function(){
@@ -1731,7 +1954,7 @@
     };
     detail.addEventListener('pointerdown',e=>{
       if (e.pointerType!=='touch' || navLock || !detailOpen || dClosing) return;
-      if (zoomOpen || e.target.closest('button,a,.pdock')) return;
+      if (zoomOpen || e.target.closest('button,a,.pdock,.bookwrap')) return;
       active=true; ax=null; sx=e.clientX; sy=e.clientY;
       zone = e.target.closest('.d-stage') ? 'img' : 'proj';
     });
@@ -1753,8 +1976,8 @@
         if (dx<-60) ok=goProject((dCur+1)%N,1); else if (dx>60) ok=goProject((dCur+N-1)%N,-1);
         return;
       }
-      if (dx<-60)      ok = (gi<gArr.length-1) ? goImage(gi+1) : goProject((dCur+1)%N, 1);
-      else if (dx>60)  ok = (gi>0)             ? goImage(gi-1) : goProject((dCur+N-1)%N,-1);
+      if (dx<-60)      ok = stepImage(1)  || goProject((dCur+1)%N, 1);
+      else if (dx>60)  ok = stepImage(-1) || goProject((dCur+N-1)%N,-1);
       if (!ok) snapBack();
     });
     detail.addEventListener('pointercancel',()=>{ if(active){active=false; if(ax==='h')snapBack();} });
@@ -1847,9 +2070,9 @@
   }
   if (reduced) planetFrame(0);
 
-  const RINGS_M=[ {r:170, n:6, y:-175}, {r:240, n:8, y:0}, {r:195, n:6, y:170} ];
-  const RINGS_D=[ {r:450, n:9, y:-115}, {r:610, n:11, y:125} ];
-  const CARD_COUNT=20;
+  const RINGS_M=[ {r:170, n:6, y:-175}, {r:240, n:9, y:0}, {r:195, n:6, y:170} ];
+  const RINGS_D=[ {r:450, n:9, y:-115}, {r:610, n:12, y:125} ];
+  const CARD_COUNT=PROJECTS.length;
   let curMode='rings';
 
   function ringsPos(i){
@@ -2086,7 +2309,8 @@ function createBrain(PROJECTS){
     'Chocolat la vie':['chocolat','çikolata','chocolate'],
     'Europe Dizel':['europe dizel','dizel','akaryakıt'],
     'Health Turkish':['health turkish','health'],
-    'Amerikadanalisveris.com':['amerikadanalisveris','amerikadan alışveriş','amerikadan','amerika$']
+    'Amerikadanalisveris.com':['amerikadanalisveris','amerikadan alışveriş','amerikadan','amerika$'],
+    'BRB Group':['brb group','brb$','brb grup','brb logo']
   };
   var PKEYS=[]; (function(){ for(var i=0;i<N;i++) PKEYS.push(prepAll(ALIAS[PROJECTS[i].t]||[PROJECTS[i].t])); })();
 
@@ -2145,6 +2369,7 @@ function createBrain(PROJECTS){
     {n:'sağlık', k:['sağlık','klinik','hastane','doktor','diş','eczane','medikal'], p:['Health Turkish']},
     {n:'finans', k:['finans','kripto','banka','yatırım','borsa','fintech','sigorta'], p:['Kripto Bando']},
     {n:'enerji', k:['enerji','akaryakıt','petrol','dizel','benzin'], p:['Europe Dizel']},
+    {n:'çelik ve endüstri', k:['çelik','endüstri','sanayi','raf sistemleri','raf$','konstrüksiyon','metal','fabrika','imalat'], p:['BRB Group']},
     {n:'oyun ve espor', k:['oyun','espor','e-spor','gaming','gamer'], p:['Gamer Force','Game Force Magazine']},
     {n:'kültür ve sanat', k:['kültür','sanat','festival','etkinlik','konser','sergi','bienal'], p:['IKSV Magazine','Caz Festivali Afişi']},
     {n:'kurum ve sivil toplum', k:['sendika','dernek','vakıf','stk','kurum$','belediye','kamu'], p:['Dok Gemi-İş Sendikası']},
@@ -2202,9 +2427,12 @@ function createBrain(PROJECTS){
     'Chocolat la vie':['Amblem','Kahve çekirdeği','Buhar formu'],
     'Europe Dizel':['Logotype','Endüstriyel yapı','Akaryakıt'],
     'Health Turkish':['Artı formu','Yeşil-mavi palet','Sağlık'],
-    'Amerikadanalisveris.com':['Logotype','Etiket formu','E-ticaret']
+    'Amerikadanalisveris.com':['Logotype','Etiket formu','E-ticaret'],
+    'BRB Group':['Örgü formlu amblem','Beyaz ve altın','İki renkli logotype','Çelik ve raf sistemleri']
   };
-  var PCOLOR={'Ship Bando':'sarı ve lacivert','Ship Bando Social':'Ship Bando kimliğinin sarı-lacivert paleti','Health Turkish':'yeşil ve mavi','Caz Festivali Afişi':'canlı bir yeşil zemin'};
+  /* yanlış anlaşılmasın diye: bu işlerde Yunus'un payı sınırlı */
+  var PEXTRA={'BRB Group':'Yunus\'un bu markadaki işi yalnızca logo; markanın web sitesi başka birinin işi.'};
+  var PCOLOR={'BRB Group':'beyaz ve altın, koyu zemin üzerinde','Ship Bando':'sarı ve lacivert','Ship Bando Social':'Ship Bando kimliğinin sarı-lacivert paleti','Health Turkish':'yeşil ve mavi','Caz Festivali Afişi':'canlı bir yeşil zemin'};
   /* "logoda nasıl çalışıyor", "web tarafında neler yapıyor" — hizmet bazında ayrıntı */
   var SERVICE={
     logo:{t:'Logo ve marka kimliğinde işlerin izinden okunan yol şu: önce markayı tek bir yalın fikre indirmek (Kripto Bando\'da "i" noktasıyla oynanan logotype, Pijans\'ta sade bir işaret), sonra o işareti sisteme çevirmek: negatif-pozitif varyantlar, kurumsal palet ve gerçek uygulama. En eksiksiz örnek Ship Bando: sarı-lacivert palet ve çanta uygulamasıyla.',
@@ -2434,7 +2662,7 @@ function createBrain(PROJECTS){
     {id:'g-uclurenk', k:['60 30 10','kaç renk kullanılmalı','renk sayısı','çok fazla renk','kaç renk kullanmalı'], solo:true, label:'Kaç renk kullanılmalı?',
       t:'Çoğu tasarım üç renkle rahat eder: bir ana renk, bir yardımcı renk ve az kullanılan bir vurgu rengi. Yaygın pratik 60-30-10 oranıdır. Renk arttıkça tutarlılığı korumak zorlaşır.'},
     {id:'g-portfolyo', k:['portfolyo nasıl','portföy nasıl','portfolyo hazırla','portfolyoda ne olmalı','iyi portfolyo','portfolyo nedir'], solo:true, label:'İyi portfolyo nasıl olur?',
-      t:'İyi portfolyo az ve seçilmiş işten oluşur; her işin yanında kısa bir hikâye durur: kim için, neden, ne yapıldı. Bu site aynı mantıkla kuruldu: 20 seçilmiş iş, her birinin kısa notu ve görselleri.'}
+      t:'İyi portfolyo az ve seçilmiş işten oluşur; her işin yanında kısa bir hikâye durur: kim için, neden, ne yapıldı. Bu site aynı mantıkla kuruldu: 21 seçilmiş iş, her birinin kısa notu ve görselleri.'}
   );
   GLOSS.forEach(function(g){ g.fk=prepAll(g.k); });
   var DEFCUE=prepAll(['nedir','ne demek','ne demektir','nasıl olmalı','nasıl olur','nasıl olmalıdır','farkı','fark ne','farkı ne','arasındaki fark','neden önemli','niye önemli','ne işe yarar','açıkla','açıklar mısın','anlat','tanımı','ne anlama','önemi','nelere dikkat','dikkat etmeli','dikkat edilmeli','dikkat edilir','püf','ipucu','ne oluyor','kavramı','anlamı','nasıl yapılır','nasıl tasarlanır','nasıl hazırlanır','nasıl kurulur','ne gerekir','neler gerekir','ne gerek','neleri kapsar','neleri içerir','nelerden oluşur','ne içerir','kapsar$','içerir$','neden$','niye$','niçin','türleri','çeşitleri','tipleri','kaç çeşit','kaç tür','türü var','çeşidi var','olmalı$','olmalıdır','olmalı mı','nasıl seçilir','nasıl belirlenir','nasıl anlaşılır','ne zaman kullanılır','nerede kullanılır','gerekli mi','şart mı','en önemli şey','en önemli nokta','en önemli kural','önemli olan ne']);
@@ -2457,7 +2685,7 @@ function createBrain(PROJECTS){
     {id:'saka', label:'Şaka yap', k:['şaka','espri','fıkra','güldür','komik bir şey','eğlendir'],
       r:function(){ return A('saka', pick(['Bir tasarımcı bara girmiş. Barmen "Ne alırsın?" demiş. Tasarımcı: "Aynısından, ama logoyu biraz büyütelim."','Müşteri: "Çok güzel olmuş, hiçbir şeyi değiştirmeyelim. Sadece rengi, yazıyı ve yerleşimi değiştirelim."','Tasarımcıların en sevdiği sayı kaçtır? Son_son_bu_kesin_FINAL_2.']), {chips:['Bir tane daha','İşlerini göster']}); }},
     {id:'yardim', label:'Neler sorabilirim?', k:['yardım','ne sorabilirim','neler sorabilirim','ne yapabilirsin','neler yapabilirsin','ne işe yararsın','nasıl kullanılır','komutlar','özelliklerin','ne biliyorsun','neler biliyorsun','kılavuz','ne bilirsin','bana ne anlatabilirsin'],
-      r:function(){ return A('yardim','Üç şeyi iyi bilirim:\n• Yunus: deneyimi, yetenekleri, çalışma biçimi\n• İşleri: 20 projenin her biri, türlerine göre\n• Tasarım: logo, tipografi, renk, grid gibi temel kavramlar\n\nAyrıca siteyi senin için kullanabilirim: "IKSV\'yi aç", "spirale geç", "sesi aç", "beni gezdir" gibi.',
+      r:function(){ return A('yardim','Üç şeyi iyi bilirim:\n• Yunus: deneyimi, yetenekleri, çalışma biçimi\n• İşleri: 21 projenin her biri, türlerine göre\n• Tasarım: logo, tipografi, renk, grid gibi temel kavramlar\n\nAyrıca siteyi senin için kullanabilirim: "IKSV\'yi aç", "spirale geç", "sesi aç", "beni gezdir" gibi.',
         {chips:['Yunus kimdir?','Logoları göster','İyi logo nasıl olur?','Beni gezdir']}); }},
 
     /* --- kimlik --- */
@@ -2484,10 +2712,10 @@ function createBrain(PROJECTS){
     {id:'enuzun', label:'En uzun nerede çalıştı?', k:['en uzun','en çok çalıştığı','en uzun süre','en uzun hangi şirket','en uzun hangi firma','en uzun hangi kurum','en uzun nerede','en uzun çalıştığı'],
       r:function(){ var best=0,i; for(i=1;i<EXP.length;i++) if(expMonths(EXP[i])>expMonths(EXP[best])) best=i; var e=EXP[best]; return A('enuzun','En uzun dönemi '+e.co+': '+expWhen(e)+', '+expDur(e)+'.',{tl:expTL([best]), chips:['Nerelerde çalıştı?']}); }},
     {id:'sektor', label:'Hangi sektörlerde çalıştı?', k:['sektör','sektörler','hangi alanlarda','ne tür firmalar','endüstri','hangi sektörlerde','ne tür işler','ne tür markalar'],
-      r:function(){ return A('sektor','Portfolyodaki işler epey farklı sektörlerden: lojistik ve nakliyat, e-ticaret, moda, gayrimenkul, finans, kafe ve gıda, enerji, sağlık, oyun ve espor, kültür-sanat ve bir sendika. Kendi işin hangisine yakın, söyle; ilgili örnekleri göstereyim.',
+      r:function(){ return A('sektor','Portfolyodaki işler epey farklı sektörlerden: lojistik ve nakliyat, e-ticaret, moda, gayrimenkul, finans, kafe ve gıda, enerji, sağlık, çelik ve endüstri, oyun ve espor, kültür-sanat ve bir sendika. Kendi işin hangisine yakın, söyle; ilgili örnekleri göstereyim.',
         {tags:SECT.slice(0,10).map(function(s){return s.n;}), chips:['Logoları göster','Web sitelerini göster']}); }},
     {id:'marka', label:'Hangi markalarla çalıştı?', k:['hangi markalar','markalar','müşteri','müşterileri','müşteriler','kimlerle çalıştı','referans','referansları','kimler için','hangi firmalara','iş ortakları','kimlere iş yaptı','yorumlar','tavsiye mektubu'],
-      r:function(){ return A('marka','Portfolyoda yer alan markalar: Pijans, Ship Bando, Amerikadanalisveris.com, DBF Nakliyat, DBF Gayrimenkul, Dok Gemi-İş Sendikası, ivy Boutique, Kripto Bando, Chocolat la vie, Europe Dizel, Health Turkish ve Gamer Force. Sitede müşteri yorumu ya da referans mektubu yer almıyor; gerekirse Yunus\'tan isteyebilirsin.',
+      r:function(){ return A('marka','Portfolyoda yer alan markalar: Pijans, Ship Bando, Amerikadanalisveris.com, DBF Nakliyat, DBF Gayrimenkul, Dok Gemi-İş Sendikası, ivy Boutique, Kripto Bando, Chocolat la vie, Europe Dizel, Health Turkish, BRB Group ve Gamer Force. Sitede müşteri yorumu ya da referans mektubu yer almıyor; gerekirse Yunus\'tan isteyebilirsin.',
         {links:mailLink(), chips:['Logoları göster','Nerelerde çalıştı?']}); }},
     {id:'yetenek', label:'Neleri iyi yapar?', k:['yetenek','yetenekleri','beceri','becerileri','uzmanlık','uzmanlığı','neleri iyi','neler bilir','neler yapabilir','skill','güçlü olduğu','alanları','ne bilir','hizmet','hizmetler','hizmetleri','neler yapar','neler yapıyor','servis','ne sunuyor','uzman','hangi alanda iyi','alanda iyi','en çok hangi alan','en iyi olduğu','neyi iyi','nelerde iyi','en iyi yaptığı','neyde iyi','hangi konuda iyi','en güçlü olduğu','uzmanlık alanı','ne konuda iyi','en iyi ne yapar','neyi en iyi'],
       r:function(){ return A('yetenek','Uzmanlık alanları sitede şöyle sıralanıyor:',{tags:['Logo ve marka kimliği','Sosyal medya yönetimi: içerik, post, hesap','Editoryal tasarım: dergi, kapak','İllüstrasyon: portre, karakter','Dijital çizim','Video ve animasyon','Web tasarım ve geliştirme: kurumsal site, SEO'],
@@ -2667,10 +2895,15 @@ function createBrain(PROJECTS){
     else if (mode==='color') t = PCOLOR[p.t] ? p.t+' paleti: '+PCOLOR[p.t]+'.' : p.t+' için renk bilgisi notlarda yazmıyor; görsellerine bakabilirsin.';
     else if (mode==='tools') t = (p.m&&p.m.a) ? p.t+' için kullanılanlar: '+p.m.a+'. Rol: '+p.m.r+'.' : p.t+' için kullanılan araçlar sitede yazmıyor. Genel olarak Photoshop ve Illustrator kullandığını biliyorum.';
     else if (n>1) t+='\n'+n+' görsel var.';
+    if (PEXTRA[p.t] && (!mode || mode==='link' || mode==='tools')) t+='\n'+PEXTRA[p.t];
     var chips=[{t:'Bu işi aç', a:{type:'open',k:k}}];
     if (cc && inCat(cc).length>1) chips.push('Benzer işler');
     chips.push('Başka bir iş göster');
     return A('proje',t,{cards:[k], spot:k, tags:(!mode && PTAGS[p.t])?PTAGS[p.t]:null, links:links.length?links:null, chips:chips});
+  }
+  function extraAnswer(k){
+    ctx.proj=k; ctx.co=-1;
+    return A('proje',PEXTRA[PROJECTS[k].t],{cards:[k], chips:[{t:'Bu işi aç', a:{type:'open',k:k}},'Web sitelerini göster','Logoları göster']});
   }
   function serviceAnswer(c){
     var sv=SERVICE[c.id], cards=[]; if (!sv) return catAnswer(c);
@@ -2871,6 +3104,7 @@ function createBrain(PROJECTS){
   var GENERIC={projeler:1,kacproje:1,eniyi:1,enyeni:1,benzer:1};
   var SOFT={yetenek:1,meslek:1,deneyim:1,kim:1,simdi:1};
   var SVCTOP={surec:1,yaklasim:1,yetenek:1,meslek:1,deneyim:1,projeler:1,tarz:1,kim:1,simdi:1,guclu:1,odak:1};
+  var SITEQ=prepAll(['sitesi','sitesini','sitesinde','siteyi','web sitesi','web sitesini','site$','web$','internet sitesi']);
   var WHOMADE=prepAll(['kim yaptı','kim tasarladı','kim kodladı','kimin tasarımı','kim çizdi','yunus mu yaptı','kendisi mi yaptı','kim hazırladı','kimin eseri','kim kurdu']);
   var BEFORE=prepAll(['ondan önce','daha önce','önceki','öncesinde','bundan önce','önce nerede']), AFTER=prepAll(['ondan sonra','sonra nerede','sonrasında','bundan sonra','sonraki']);
 
@@ -2934,7 +3168,8 @@ function createBrain(PROJECTS){
         if (h(Q.site)||h(Q.show)&&cw.length<=2){ var rc=relCards(EXP[ctx.co]); if (rc.length){ if (h(Q.open)){ ctx.proj=rc[0]; return A('k-ac',PROJECTS[rc[0]].t+' açılıyor.',{act:{type:'open',k:rc[0]}, chips:['Bu iş ne?','Benzer işler']}); } var pa0=projAnswer(rc[0]); if (rc.length>1) pa0.cards=rc; return pa0; } }
       }
       if (lastProj && ctx.proj>-1){
-        if (h(WHOMADE)){ var pw=PROJECTS[ctx.proj]; return A('proje',pw.t+' Yunus\'un işi.'+(pw.m&&pw.m.r?' Bu projedeki rolü: '+pw.m.r+'.':''),{cards:[ctx.proj], chips:[{t:'Bu işi aç', a:{type:'open',k:ctx.proj}},'Benzer işler']}); }
+        if (PEXTRA[PROJECTS[ctx.proj].t] && h(SITEQ)) return extraAnswer(ctx.proj);
+        if (h(WHOMADE)){ var pw=PROJECTS[ctx.proj]; return A('proje',(PEXTRA[pw.t] ? PEXTRA[pw.t] : pw.t+' Yunus\'un işi.'+(pw.m&&pw.m.r?' Bu projedeki rolü: '+pw.m.r+'.':'')),{cards:[ctx.proj], chips:[{t:'Bu işi aç', a:{type:'open',k:ctx.proj}},'Benzer işler']}); }
         if (ctx.proj===idx('Osmanlı Destesi') && h(prepAll(['kaç kart','kart sayısı','kaç kağıt']))) return A('proje','Deste 52 karttan oluşuyor; sitede bunlardan seçilmiş 12 görsel var.',{cards:[ctx.proj], chips:[{t:'Bu işi aç', a:{type:'open',k:ctx.proj}}]});
         if (h(FORWHOM)) return projAnswer(ctx.proj);
         if (h(Q.count)) return projAnswer(ctx.proj,'count');
@@ -2983,6 +3218,7 @@ function createBrain(PROJECTS){
       if (bp.k2>-1 && bp.k2!==bp.k && bp.s2>=8 && (h(CMP) || (Math.abs(bp.s-bp.s2)<.6 && hit(W,text,'ve$',true)>0))) return compareAnswer(bp.k,bp.k2);
       if (bp.k2>-1 && Math.abs(bp.s-bp.s2)<.6 && bp.k2!==bp.k){ ctx.proj=bp.k; return A('ikili','Bunu iki işle eşleştirdim; hangisi?',{cards:[bp.k,bp.k2], chips:[]}); }
       if (h(Q.open)){ var pa=projAnswer(bp.k); pa.act={type:'open',k:bp.k}; pa.t=PROJECTS[bp.k].t+' açılıyor.'; pa.cards=null; pa.links=null; pa.chips=['Bu iş ne?','Benzer işler']; return pa; }
+      if (PEXTRA[PROJECTS[bp.k].t] && h(SITEQ)) return extraAnswer(bp.k);
       return projAnswer(bp.k, h(Q.count)?'count':h(Q.tools)?'tools':h(Q.color)?'color':h(Q.when)?'when':h(Q.link)?'link':null);
     }
 
@@ -3165,14 +3401,17 @@ function createBrain(PROJECTS){
     const mqSync=()=>{ document.body.classList.toggle('yb-full',open&&small()); fitVV(); };
     if (mq.addEventListener) mq.addEventListener('change',mqSync); else if (mq.addListener) mq.addListener(mqSync);
     /* telefon klavyesi: paneli görünen alana sığdır (iOS) */
-    const vv=window.visualViewport;
+    const vv=window.visualViewport; let maxH=0;
     function fitVV(){
-      if (!vv || !open || !small()){ yb.style.height=''; yb.style.bottom=''; return; }
-      const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop);
-      if (kb<60){ yb.style.height=''; yb.style.bottom=''; return; }
-      yb.style.bottom=(kb+8)+'px'; yb.style.height=Math.min(vv.height-16,Math.round(innerHeight*.62))+'px'; toEnd();
+      if (!vv || !open || !small()){ yb.style.height=''; yb.style.top=''; yb.style.bottom=''; return; }
+      maxH=Math.max(maxH,innerHeight,vv.height);
+      if (maxH-vv.height<120){ yb.style.height=''; yb.style.top=''; yb.style.bottom=''; return; }      /* klavye kapalı */
+      /* klavye açık: paneli görünen alana tam oturt (iOS sayfayı kaydırır, Android ekranı küçültür) */
+      if (window.scrollY || window.pageYOffset) window.scrollTo(0,0);
+      yb.style.bottom='auto'; yb.style.top=(vv.offsetTop+6)+'px'; yb.style.height=Math.max(180,vv.height-12)+'px'; toEnd();
     }
     if (vv){ vv.addEventListener('resize',fitVV); vv.addEventListener('scroll',fitVV); }
+    inp.addEventListener('focus',function(){ setTimeout(fitVV,350); }); inp.addEventListener('blur',function(){ setTimeout(function(){ fitVV(); relayout(); },220); });
 
     function finish(){ if (busy){ const f=busy; busy=null; f(); } }
     function addUser(t){ const r=el('div','yb-q'); r.appendChild(el('span','',t)); log.appendChild(r); }
@@ -3401,7 +3640,8 @@ function createBrain(PROJECTS){
     }
     govSkip(1500);
   }
-  addEventListener('resize',function(){ clearTimeout(rzT); rzT=setTimeout(relayout,160); });
+  const typing=()=>{ const a=document.activeElement; return !!a && (a.tagName==='INPUT' || a.tagName==='TEXTAREA'); };
+  addEventListener('resize',function(){ clearTimeout(rzT); rzT=setTimeout(function(){ if (!typing()) relayout(); },160); });   /* telefonda klavye açılması bir "yeniden boyutlanma" değildir */
   addEventListener('orientationchange',function(){ clearTimeout(rzT); rzT=setTimeout(relayout,260); });
 
   addEventListener('wheel',e=>{
